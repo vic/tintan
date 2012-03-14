@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+var path  = require('path')
+  , local = path.join( process.cwd(), 'node_modules/tintan/lib/tintan' )
+  , globl = path.join( __dirname, '../lib/tintan' )
+  , exist = path.existsSync( local )
+require('coffee-script')
+require( exist ? local : globl ).$.main()
