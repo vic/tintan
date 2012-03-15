@@ -43,6 +43,7 @@ main = (Tintan)->
   # require('./build') Tintan
   boot = require('./boot') Tintan
   if boot.ready()
+    loader = new Loader()
     loader.load(jake.opts.jakefile)
   else unless taskNames.length
     taskNames = ['tintan:init']

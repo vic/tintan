@@ -34,7 +34,9 @@ npm_install = ->
 class Boot
 
   ready: ->
-    false
+    files = ['package.json', 'Jakefile.coffee', 'plugins/tintan/plugin.py']
+    return false for v in files when jake.Task['tintan:'+_(v)].shouldRunAction()
+    true
 
   constructor: (Ti)->
 
