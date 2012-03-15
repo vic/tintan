@@ -33,6 +33,11 @@ main = (Tintan)->
 
   global[n] = v for own n, v of api
 
+  if process.env.TINTAN
+    Tintan.env = JSON.parse(process.env.TINTAN)
+  else
+    Tintan.env = {}
+
   taskNames = program.taskNames
 
   # require('./build') Tintan

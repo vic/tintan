@@ -30,7 +30,7 @@ def compile(config):
         tintan = os.path.join(project_dir, 'node_modules/tintan/bin/tintan')
 
         proc = subprocess.Popen([tintan, '-C', project_dir, 'tintan:build'],
-                                env={'CONFIG': to_json(c)})
+                                env={'TINTAN': to_json(c)})
         proc.communicate();
         ret = proc.wait()
 
