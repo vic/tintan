@@ -1,7 +1,6 @@
 #!/usr/bin/env coffee
 
-require('Tintan').global()
+require('colors')
+console.log(require.resolve('tintan'))
 
-
-compile 'coffee', from: _('src/coffee'), ext: '.coffee'
-compile 'clojure', from: _('src/clojure'), ext: '.clojure'
+task 'default', ->

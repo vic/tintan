@@ -35,7 +35,7 @@ class Boot
 
   ready: ->
     files = ['package.json', 'Jakefile.coffee', 'plugins/tintan/plugin.py']
-    return false for v in files when jake.Task['tintan:'+_(v)].shouldRunAction()
+    return false for v in files when jake.Task['boot:'+_(v)].shouldRunAction()
     true
 
   constructor: (Ti)->
@@ -44,13 +44,16 @@ class Boot
     {$, appXML} = Tintan
     {E, _} = $
 
-    namespace 'tintan', ->
+    namespace 'boot', ->
 
-      desc 'Install the Tintan plugin for Titanium Studio'
       T 'plugins/tintan/plugin.py'
 
+      desc 'Install the Tintan plugin for Titanium Studio'
+      task 'plugin.py': _ 'plugins/tintan/plugin.py'
+
+
       desc 'Register plugin on tiapp.xml'
-      task 'plugin', ->
+      task 'plugin.xml', ->
         unless appXML.plugin()
           info 'register'.green + ' tintan plugin on tiapp.xml'
           xml = appXML.doc
@@ -61,13 +64,15 @@ class Boot
           plugin.attr version: Tintan.version
           xml.encoding 'utf-8'
           fs.writeFileSync appXML.file, xml.toString(), 'utf-8'
-      T.deps.push 'plugin'
+      T.deps.push 'plugin.xml'
 
-      desc 'Create a generic package.json'
       T 'package.json'
+      desc 'Create a generic package.json'
+      task 'package.json': _ 'package.json'
 
-      desc 'Create a basic Jakefile'
       T 'Jakefile.coffee'
+      desc 'Create a basic Jakefile'
+      task 'Jakefile.coffee': _ 'Jakefile.coffee'
 
       desc 'Install node modules with npm'
       task 'npm', [_('package.json')], npm_install, async: true
@@ -75,6 +80,6 @@ class Boot
 
       desc 'Iniitalize this project to use Tintan'
       task 'init', T.deps, ->
-        info 'Tintan initialized'
+        info 'Tintan initialized'.bold.italic
 
 module.exports = (Tintan)-> new Boot Tintan

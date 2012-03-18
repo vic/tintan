@@ -11,6 +11,7 @@
     "bdd",
     "tdd"
   ],
+  "main": "index",
   "bin": {
     "tintan": "./bin/tintan"
   },
@@ -18,10 +19,10 @@
     "colors": ">= 0.0.0",
     "jake": ">= 0.0.0",
     "libxmljs": ">= 0.0.0",
-    "eco": ">= 0.0.0"
+    "eco": ">= 0.0.0",
+    "coffee-script": ">= 0.0.0"
   },
   "devDependencies": {
-    "coffee-script": ">= 0.0.0"
   }
 }
 

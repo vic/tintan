@@ -46,7 +46,7 @@ main = (Tintan)->
     loader = new Loader()
     loader.load(jake.opts.jakefile)
   else unless taskNames.length
-    taskNames = ['tintan:init']
+    taskNames = ['boot:init']
 
   taskNames = taskNames.length and taskNames or ['default']
   api.task '__root__', taskNames, ->
