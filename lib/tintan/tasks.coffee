@@ -16,3 +16,8 @@ module.exports = (Tintan)->
 
     desc 'Kill the app connected to this fastdev server'
     task 'kill', -> Tintan.$.fastdev 'kill-app'
+
+  namespace 'tintan', ->
+
+    task 'build', ->
+      console.log 'building '

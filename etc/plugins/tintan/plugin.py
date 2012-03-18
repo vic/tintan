@@ -25,7 +25,7 @@ def compile(config):
         c.pop('tiapp')
         project_dir = c.get('project_dir')
         
-	print "[INFO] Tintan plugin loaded. Executing `tintan` on ", project_dir
+	print "[TINTAN] Executing `tintan:build` task on ", project_dir
 
         tintan = os.path.join(project_dir, 'node_modules/tintan/bin/tintan')
 
@@ -34,6 +34,16 @@ def compile(config):
         proc.communicate();
         ret = proc.wait()
 
-        if ret <> 0:
+        if ret != 0:
           raise Exception('Tintan terminated with exitcode: '+str(ret))
-        
+
+if __name__ == '__main__':
+	proj_dir = None
+	if len(sys.argv) < 2:
+		proj_dir = os.getcwd()
+	else:
+		proj_dir = sys.argv[1]
+	config = {'project_dir': proj_dir, 'cli': True, 'tiapp': None}
+        compile(config)
+                
+    
