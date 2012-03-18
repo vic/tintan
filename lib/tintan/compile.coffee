@@ -37,11 +37,12 @@ class Coffee
     sources = (s for s of map)
     return false if sources.length == 0
 
-    for source, compiled of map when options.atomic
-      desc source
-      file compiled, [source], (->
-        compile [source], path.dirname(compiled), -> complete()
-      ), async: true
+    if options.atomic
+      for source, compiled of map
+        desc source
+        file compiled, [source], (->
+          compile [source], path.dirname(compiled), -> complete()
+        ), async: true
 
     Tintan.$.onTaskNamespace options.name, (name)->
       desc "Compile coffee-script sources into #{options.target}"
