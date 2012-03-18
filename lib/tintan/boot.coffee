@@ -81,5 +81,6 @@ class Boot
       desc 'Initialize this project to use Tintan'
       task 'init', T.deps, ->
         info 'Tintan initialized'.bold.italic
+        info 'Take a look at your Jakefile.coffee'
 
 module.exports = (Tintan)-> new Boot Tintan
