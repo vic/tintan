@@ -2,7 +2,10 @@
 # For more help on customizing Tintan see: http://github.com/vic/tintan
 
 # Include Tintan tasks on this project.
-Tintan = require('tintan')
+tintan = require('tintan')
+
+# Compile coffee-script sources from src/coffee
+tintan.compile 'coffee'
 
 # Make the default task depend on tintan:build.
 task 'default', ['tintan:build']

@@ -1,6 +1,8 @@
 require('coffee-script')
 
 var Tintan = require('./lib/tintan') 
-Tintan.$.tasks()
+  , tintan = new Tintan
 
-module.exports = Tintan
+Tintan.$.tasks(tintan)
+
+module.exports = tintan

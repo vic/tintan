@@ -18,6 +18,7 @@ args = process.argv.slice(2)
 program = new Program()
 program.parseArgs(args)
 
+
 main = (Tintan)->
 
   jake.opts = program.opts

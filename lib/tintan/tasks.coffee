@@ -1,21 +1,13 @@
-module.exports = (Tintan)->
+files = '
 
-  namespace 'fastdev', ->
+  fastdev
+  compile
 
-    desc 'Start fastdev server'
-    task 'start', -> Tintan.$.fastdev 'start'
+'.trim().split(/[^a-zA-Z\/\.]+/).map (s)-> './'+s
 
-    desc 'Stop fastdev server'
-    task 'stop', -> Tintan.$.fastdev 'stop'
+module.exports = (tintan)->
 
-    desc 'Get the status of the fastdev server'
-    task 'status', -> Tintan.$.fastdev 'status'
-
-    desc 'Restart the app connected to this fastdev server'
-    task 'restart', -> Tintan.$.fastdev 'restart-app'
-
-    desc 'Kill the app connected to this fastdev server'
-    task 'kill', -> Tintan.$.fastdev 'kill-app'
+  require(file) tintan for file in files
 
   namespace 'tintan', ->
 

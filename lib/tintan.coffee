@@ -6,21 +6,31 @@ spawn      = require('child_process').spawn
 
 class $
 
-  @mem = (fn) -> (args ...)->
+  @onTaskNamespace: (taskName, scope) ->
+    names = taskName.split(':')
+    taskName = names.pop()
+    rec = ->
+      if names.length == 0
+        scope taskName
+      else
+        namespace names.shift(), rec
+    rec()
+
+  @mem: (fn) -> (args ...)->
     (arguments.callee['memo'] ||= {})[[].concat args] ||= fn.apply this, args
 
-  @pathSearch = (bin, dirs = process.env.PATH.split(':')) ->
+  @pathSearch: (bin, dirs = process.env.PATH.split(':')) ->
     return path.join(d, bin) for d in dirs when path.existsSync path.join(d, bin)
 
-  @_: (pth) -> path.join(process.cwd(), pth)
+  @_: (args ...) -> path.join.apply(path, [process.cwd()].concat(args))
 
-  @E: (pth) -> path.join(__dirname, '../etc', pth)
+  @E: (args ...) -> path.join.apply(path, [__dirname, '../etc'].concat(args))
 
   @pkg: JSON.parse fs.readFileSync path.join(__dirname, '../package.json'), 'utf-8'
 
   @main: -> require('./tintan/main') Tintan
 
-  @tasks: -> require('./tintan/tasks') Tintan
+  @tasks: (tintan)-> require('./tintan/tasks') tintan
 
   @home: @mem ->
      dirs = [  process.env.TI_HOME
