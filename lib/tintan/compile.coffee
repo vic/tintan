@@ -1,7 +1,8 @@
 require 'colors'
-fs    = require 'fs'
-path  = require 'path'
-spawn = require('child_process').spawn
+fs     = require 'fs'
+path   = require 'path'
+coffee = require 'coffee-script'
+spawn  = require('child_process').spawn
 
 Tintan = null
 
@@ -19,7 +20,6 @@ class Coffee
   DEFAULT_OPTIONS =
     src: 'src/coffee'        # directory to take .coffee files from
     target: 'Resources'      # directory to put .js files into
-    atomic: false            # should create a file task for each .js target?
     name: 'compile:coffee'   # name of the compiler task to generate
 
 
@@ -38,24 +38,15 @@ class Coffee
     return false if sources.length == 0
     compiled = (c for s, c of map)
 
-    if options.atomic
-      for s, c of map
-        file c, [s], (->
-          compile @prereqs, path.dirname(@name), -> complete()
-        ), async: true
+    for s, c of map
+      file c, [s], (->
+        compile @prereqs[0], @name, -> complete()
+      ), async: true
 
     Tintan.$.onTaskNamespace options.name, (name)->
       desc "Compile coffee-script sources into #{options.target}"
-      if options.atomic
-        task name, compiled, (->
-          console.log 'compiled'.green + ' coffee-script sources into ' + options.target
-        ), async: true
-      else
-        task name, (->
-          console.log 'compile'.bold + ' coffee-script sources into ' + options.target
-          jake.mkdirP(path.dirname c) for c in compiled
-          compile [from], target, -> complete()
-        ), async: true
+      task name, compiled, ->
+        console.log 'compiled'.green + ' coffee-script sources into ' + options.target
 
     Tintan.$.onTaskNamespace options.name + ':clean', ->
       desc "Clean coffee-script produced files from #{options.target}"
@@ -63,16 +54,12 @@ class Coffee
         fs.unlink c for c in compiled
     true
 
-   compile: (files, target, cb)->
-     coffee = path.join(require.resolve('coffee-script'), '../../../bin/coffee')
-     argv = ['--compile', '--output', target].concat files
-     jake.mkdirP target
-     p = spawn coffee, argv
-     p.stdout.on 'data', (data)-> process.stdout.write data
-     p.stderr.on 'data', (data)-> process.stderr.write data
-     p.on 'exit', (status)->
-       fail "Compilation failed with status #{status}" unless status == 0
-       cb()
+   compile: (source, target, cb)->
+     jake.mkdirP path.dirname(target)
+     c = fs.readFileSync source, 'utf-8'
+     j = coffee.compile c
+     fs.writeFileSync target, j, 'utf-8'
+     cb()
 
    invokeTask: ->
      jake.Task[@options.name].invoke()
