@@ -78,7 +78,7 @@ class Boot
       task 'npm', [_('package.json')], npm_install, async: true
       T.deps.push 'npm'
 
-      desc 'Iniitalize this project to use Tintan'
+      desc 'Initialize this project to use Tintan'
       task 'init', T.deps, ->
         info 'Tintan initialized'.bold.italic
 
