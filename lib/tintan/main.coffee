@@ -41,7 +41,6 @@ main = (Tintan)->
 
   taskNames = program.taskNames
 
-  # require('./build') Tintan
   boot = require('./boot') Tintan
   if boot.ready()
     loader = new Loader()

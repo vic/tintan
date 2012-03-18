@@ -41,7 +41,8 @@ class Boot
   constructor: (Ti)->
 
     Tintan = Ti
-    {$, appXML} = Tintan
+    appXML = Tintan.appXML()
+    {$} = Tintan
     {E, _} = $
 
     namespace 'boot', ->

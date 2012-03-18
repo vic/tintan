@@ -19,18 +19,18 @@ if hasattr(json, 'dumps'):
 else:
 	to_json = json.write
 
-
 def compile(config):
         c = config.copy()
         c.pop('tiapp')
         project_dir = c.get('project_dir')
         
-	print "[TINTAN] Executing `tintan:build` task on ", project_dir
-
         tintan = os.path.join(project_dir, 'node_modules/tintan/bin/tintan')
+        
+	print "[INFO] Executing Tintan"
+        print "       node", tintan, "-C", project_dir, 'tintan:build'
 
-        proc = subprocess.Popen([tintan, '-C', project_dir, 'tintan:build'],
-                                env={'TINTAN': to_json(c)})
+        proc = subprocess.Popen(['node', tintan, '-C', project_dir, 'tintan:build'],
+                                env={'TINTAN': to_json(c)}, stderr = sys.stderr, stdout = sys.stdout)
         proc.communicate();
         ret = proc.wait()
 
@@ -46,4 +46,3 @@ if __name__ == '__main__':
 	config = {'project_dir': proj_dir, 'cli': True, 'tiapp': None}
         compile(config)
                 
-    

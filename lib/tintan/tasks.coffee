@@ -12,4 +12,4 @@ module.exports = (tintan)->
   namespace 'tintan', ->
 
     task 'build', ['^compile'], ->
-      console.log 'done'.green + ' building ' + tintan.constructor.appXML.name()
+      console.log 'done'.green + ' building ' + tintan.constructor.appXML().name()

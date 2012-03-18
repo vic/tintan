@@ -74,12 +74,12 @@ class $
 
 class AppXML
 
-  file: $._('tiapp.xml')
-  exist: -> path.existsSync @file
+  file: -> $._('tiapp.xml')
+  exist: -> path.existsSync @file()
 
   constructor: ->
-    throw "Missing Titanium file #{@file}".red unless @exist()
-    @doc = libxml.parseXmlString fs.readFileSync @file, 'utf-8'
+    throw "Missing Titanium file #{@file()}".red unless @exist()
+    @doc = libxml.parseXmlString fs.readFileSync @file(), 'utf-8'
 
   plugin: -> @doc.get "./plugins/plugin[contains(text(),'tintan')]"
 
@@ -96,7 +96,7 @@ class Tintan
 
   @$ = $
   @version: $.pkg.version
-  @appXML = new AppXML
+  @appXML: $.mem -> new AppXML
 
 
 module.exports = Tintan
