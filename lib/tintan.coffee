@@ -1,3 +1,4 @@
+require 'colors'
 path       = require 'path'
 fs         = require 'fs'
 libxml     = require 'libxmljs'
