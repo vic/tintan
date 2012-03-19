@@ -1,7 +1,7 @@
 {
   "name": "tintan",
   "description": "Titanium development with style.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "keywords": [
     "titanium",
     "mobile",
@@ -22,7 +22,5 @@
     "eco": ">= 0.0.0",
     "coffee-script": ">= 0.0.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
-
