@@ -64,7 +64,7 @@ class Boot
           plugin = plugins.node 'plugin', 'tintan'
           plugin.attr version: Tintan.version
           xml.encoding 'utf-8'
-          fs.writeFileSync appXML.file, xml.toString(), 'utf-8'
+          fs.writeFileSync appXML.file(), xml.toString(), 'utf-8'
       T.deps.push 'plugin.xml'
 
       T 'package.json'
