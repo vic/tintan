@@ -11,7 +11,7 @@
     "bdd",
     "tdd"
   ],
-  "main": "index",
+  "main": "./index.js",
   "bin": {
     "tintan": "./bin/tintan"
   },

@@ -1,4 +1,4 @@
-<% devDeps = (tintan: @Tintan.version) ; devDeps[n] = v for own n, v of @Tintan.$.pkg.dependencies %>
+<% devDeps = (tintan: @Tintan.version) %>
 {
   "name": "<%= @Tintan.appXML().name() %>",
   "version": "<%= @Tintan.appXML().version() %>",

@@ -5,6 +5,7 @@ files   = [
   'Jakefile.coffee'
 , 'README.md'
 , 'package.json'
+, 'index.js'
 , 'lib/*'
 , 'etc/*'
 , 'bin/*'
