@@ -42,7 +42,7 @@
   Normally Tintan will try to guess your current environment setup, you can
   however force a particular setting by exporting one of the following variables:
 
-    TI_PLATFORM   - The platform for mobile development: 'android' or 'iphone'
+    TI_PLATFORM   - The platform for mobile development: 'android', 'iphone', 'mobileweb', 'module'
 
                     By default if your OS is Linux, android will be used,
                     on Mac iphone will be selected by default.
@@ -63,10 +63,14 @@
 
                     By default the python found in PATH
 
+    IOS_VERSION   - The version of iOS to target, eg. 4.0, 5.0 
+
+                    Default: max value of ~/Library/Application Support/iPhone Simulator/
+
 
     ANDROID_SDK   - The location of the Android development kit.
 
-                    Default: none.
+                    Default: on Mac the max value of /usr/local/Cellar/android-sdk/* if any.
 
 
     AVD           - The Android virtual device to use for development.

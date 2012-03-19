@@ -21,15 +21,17 @@ else:
 
 def compile(config):
         c = config.copy()
-        c.pop('tiapp')
+        c.pop('tiapp', '')
+        c.pop('android_builder', '')
+        c.pop('logger', '')
         project_dir = c.get('project_dir')
         
         tintan = os.path.join(project_dir, 'node_modules/tintan/bin/tintan')
         
 	print "[INFO] Executing Tintan"
-        print "       node", tintan, "-C", project_dir, 'tintan:build'
+        print "       node", tintan, "-C", project_dir, 'tintan'
 
-        proc = subprocess.Popen(['node', tintan, '-C', project_dir, 'tintan:build'],
+        proc = subprocess.Popen(['node', tintan, '-C', project_dir, 'tintan'],
                                 env={'TINTAN': to_json(c)}, stderr = sys.stderr, stdout = sys.stdout)
         proc.communicate();
         ret = proc.wait()

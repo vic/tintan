@@ -1,20 +1,24 @@
 module.exports = (tintan)->
 
-  fastdev = tintan.constructor.$.fastdev
+  Tintan = tintan.constructor
 
-  namespace 'fastdev', ->
+  fastdev = Tintan.$.fastdev
 
-    desc 'Start fastdev server'
-    task 'start', -> fastdev 'start'
+  if Tintan.appXML().targets 'android'
 
-    desc 'Stop fastdev server'
-    task 'stop', -> fastdev 'stop'
+    namespace 'fastdev', ->
 
-    desc 'Get the status of the fastdev server'
-    task 'status', -> fastdev 'status'
+      desc 'Start fastdev server'
+      task 'start', -> fastdev 'start'
 
-    desc 'Restart the app connected to this fastdev server'
-    task 'restart', -> fastdev 'restart-app'
+      desc 'Stop fastdev server'
+      task 'stop', -> fastdev 'stop'
 
-    desc 'Kill the app connected to this fastdev server'
-    task 'kill', -> fastdev 'kill-app'
+      desc 'Get the status of the fastdev server'
+      task 'status', -> fastdev 'status'
+
+      desc 'Restart the app connected to this fastdev server'
+      task 'restart', -> fastdev 'restart-app'
+
+      desc 'Kill the app connected to this fastdev server'
+      task 'kill', -> fastdev 'kill-app'

@@ -7,5 +7,5 @@ tintan = require('tintan')
 # Compile coffee-script sources from src/coffee
 tintan.compile 'coffee'
 
-# Make the default task depend on tintan:build.
-task 'default', ['tintan:build']
+# Make the default task depend on build.
+task 'default', ['build']

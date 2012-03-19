@@ -46,6 +46,21 @@ class $
      'win32':  'win'
     }[require('os').platform()]
 
+  @ios_version: @mem ->
+     iphone_dir = path.join(process.env.HOME, 'Library', 'Application Support', 'iPhone Simulator')
+     if path.existsSync iphone_dir
+       return process.env.IOS_VERSION if process.env.IOS_VERSION &&
+           path.existsSync(path.join(iphone_dir, process.env.IOS_VERSION))
+       fs.readdirSync(iphone_dir).sort()[-1..][0]
+
+  @android_home: @mem ->
+     brew_location = '/usr/local/Cellar/android-sdk'
+     if process.env.ANDROID_SDK && path.existsSync process.env.ANDROID_SDK
+       process.env.ANDROID_SDK
+     else if path.existsSync brew_location
+       path.join brew_location, fs.readdirSync(brew_location).sort()[-1..][0]
+
+
   @platform: process.env.TI_PLATFORM || {osx: 'iphone'}[@os] || 'android'
 
   @sdk: @mem ->
@@ -54,23 +69,26 @@ class $
      else
        fs.readdirSync(path.join(@home(), 'mobilesdk', @os)).sort()[-1..][0]
 
-  @tipy: @mem -> path.join(@home(), 'mobilesdk', @os, @sdk(), 'titanium.py')
-
   @py: @mem ->
      return py for py in [process.env.PYTHON, process.env.TI_PYTHON,
                           process.env.PYTHON_EXECUTABLE] when path.existsSync py
      @pathSearch 'python'
 
-  @titan: (args ..., cb)->
+  @titan: (args ...)->
+    @tipy.apply(this, [['titanium.py'], args])
+
+  @fastdev: (args ...)-> @titan.apply this, ['fastdev'].concat(args)
+
+  @tipy: (ary, args ..., cb)->
     unless cb instanceof Function
       args.push cb
       cb = ->
-    p = spawn @py(), [@tipy()].concat(args)
+    tool = path.join.apply(path, [@home(), 'mobilesdk', @os, @sdk()].concat(ary))
+    p = spawn @py(), [tool].concat(args)
     p.stdout.on 'data', (data)-> process.stdout.write data
     p.stderr.on 'data', (data)-> process.stderr.write data
     p.on 'exit', cb
 
-  @fastdev: (args ...)-> @titan.apply this, ['fastdev'].concat(args)
 
 class AppXML
 
@@ -83,6 +101,10 @@ class AppXML
 
   plugin: -> @doc.get "./plugins/plugin[contains(text(),'tintan')]"
 
+  id: -> @doc.get('./id').text()
+
+  guid: -> @doc.get('./guid').text()
+
   name: -> @doc.get('./name').text()
 
   version: ->
@@ -91,6 +113,14 @@ class AppXML
     if v.length < 3
       v = v.concat('0' for i in [0 .. (2 - v.length)])
     v.join '.'
+
+  targets: (devices ...)->
+    if devices.length > 0
+      enabled = (device for device in devices when !!@doc.
+          get('./deployment-targets/target[@device="'+device+'" and contains(text(), "true")]'))
+      enabled.length == devices.length
+    else
+      @doc.find('./deployment-targets/target[contains(text(), "true")]/@device').map (i)-> i.text()
 
 class Tintan
 
