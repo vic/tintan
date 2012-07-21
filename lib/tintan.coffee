@@ -20,7 +20,7 @@ class $
     (arguments.callee['memo'] ||= {})[[].concat args] ||= fn.apply this, args
 
   @pathSearch: (bin, dirs = process.env.PATH.split(':')) ->
-    return path.join(d, bin) for d in dirs when path.existsSync path.join(d, bin)
+    return path.join(d, bin) for d in dirs when fs.existsSync path.join(d, bin)
 
   @_: (args ...) -> path.join.apply(path, [process.cwd()].concat(args))
 
@@ -38,7 +38,7 @@ class $
        , path.join(process.env.HOME, 'Library/Application Support/Titanium')
        , path.join(process.env.HOME, '.titanium')
        ]
-     return d for d in dirs when path.existsSync d
+     return d for d in dirs when fs.existsSync d
 
   @os: {
      'linux':  'linux'
@@ -48,30 +48,30 @@ class $
 
   @ios_version: @mem ->
      iphone_dir = path.join(process.env.HOME, 'Library', 'Application Support', 'iPhone Simulator')
-     if path.existsSync iphone_dir
+     if fs.existsSync iphone_dir
        return process.env.IOS_VERSION if process.env.IOS_VERSION &&
-           path.existsSync(path.join(iphone_dir, process.env.IOS_VERSION))
+           fs.existsSync(path.join(iphone_dir, process.env.IOS_VERSION))
        fs.readdirSync(iphone_dir).sort()[-1..][0]
 
   @android_home: @mem ->
      brew_location = '/usr/local/Cellar/android-sdk'
-     if process.env.ANDROID_SDK && path.existsSync process.env.ANDROID_SDK
+     if process.env.ANDROID_SDK && fs.existsSync process.env.ANDROID_SDK
        process.env.ANDROID_SDK
-     else if path.existsSync brew_location
+     else if fs.existsSync brew_location
        path.join brew_location, fs.readdirSync(brew_location).sort()[-1..][0]
 
 
   @platform: process.env.TI_PLATFORM || {osx: 'iphone'}[@os] || 'android'
 
   @sdk: @mem ->
-     if path.existsSync process.env.TI_SDK
+     if fs.existsSync process.env.TI_SDK
        process.env.TI_SDK
      else
        fs.readdirSync(path.join(@home(), 'mobilesdk', @os)).sort()[-1..][0]
 
   @py: @mem ->
      return py for py in [process.env.PYTHON, process.env.TI_PYTHON,
-                          process.env.PYTHON_EXECUTABLE] when path.existsSync py
+                          process.env.PYTHON_EXECUTABLE] when fs.existsSync py
      @pathSearch 'python'
 
   @titan: (args ...)->
@@ -93,7 +93,7 @@ class $
 class AppXML
 
   file: -> $._('tiapp.xml')
-  exist: -> path.existsSync @file()
+  exist: -> fs.existsSync @file()
 
   constructor: ->
     throw "Missing Titanium file #{@file()}".red unless @exist()

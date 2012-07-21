@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 var path  = require('path')
+  , fs    = require('fs')
   , local = path.join( process.cwd(), 'node_modules/tintan/lib/tintan.coffee' )
   , globl = path.join( __dirname, '../lib/tintan.coffee' )
-  , exist = path.existsSync( local )
+  , exist = fs.existsSync( local )
 require('coffee-script')
 require(exist ? local : globl).$.main()

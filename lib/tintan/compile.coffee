@@ -8,7 +8,7 @@ Tintan = null
 
 compilerMap = (root, rexp, transform = ((i)->i), base = [], map = {})->
   dir = path.join.apply(path, [root].concat(base))
-  path.existsSync(dir) and fs.readdirSync(dir).forEach (f)->
+  fs.existsSync(dir) and fs.readdirSync(dir).forEach (f)->
     if fs.statSync(path.join(dir, f)).isDirectory()
       compilerMap(root, rexp, transform, base.concat(f), map)
     else if rexp.test(f)

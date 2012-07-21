@@ -22,5 +22,8 @@
     "eco": ">= 0.0.0",
     "coffee-script": ">= 0.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.8"
+  }
 }
