@@ -10,7 +10,7 @@ jakePkg = JSON.parse fs.readFileSync "#{jakeLib}/../package.json", 'utf-8'
 
 jake.version = jakePkg.version
 
-process.addListener 'uncaugthException', (err)-> program.handleErr err
+process.addListener 'uncaughtException', (err)-> program.handleErr err
 
 global.jake = jake
 
