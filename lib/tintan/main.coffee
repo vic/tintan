@@ -22,6 +22,7 @@ program.parseArgs(args)
 main = (Tintan)->
 
   jake.opts = program.opts
+  jake.program = program
 
   jake[n] = v for own n, v of utils
 
