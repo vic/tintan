@@ -77,11 +77,11 @@ class $
   @titan: (args ...)->
     @tipy.apply(this, [['titanium.py'], args])
 
-  @fastdev: (args ...)-> @titan.apply this, ['fastdev'].concat(args)
+  @fastdev: (args ...)=> @titan.apply this, ['fastdev'].concat(args || [])
 
   @tipy: (ary, args ..., cb)->
     unless cb instanceof Function
-      args.push cb
+      if args?.length then args.push cb else args = cb
       cb = ->
     tool = path.join.apply(path, [@home(), 'mobilesdk', @os, @sdk()].concat(ary))
     p = spawn @py(), [tool].concat(args)
