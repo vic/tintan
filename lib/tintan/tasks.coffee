@@ -4,6 +4,7 @@ files = '
   compile
   build
   run
+  install
 
 '.trim().split(/[^a-zA-Z\/\.]+/).map (s)-> './'+s
 
