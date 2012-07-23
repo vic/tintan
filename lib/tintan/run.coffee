@@ -3,6 +3,13 @@ module.exports = (tintan)->
 
   namespace 'run', ->
 
+    if Tintan.appXML().targets 'android'
+      desc 'Run the application on Android emulator'
+      task 'android', ->
+        Tintan.$.tipy ['android', 'builder.py'], 'emulator',
+           Tintan.appXML().name(), Tintan.$.android_home(), process.cwd(), Tintan.appXML().id(),
+           Tintan.$.android_version(), 'WVGA800'
+
     if Tintan.appXML().targets 'ipad'
       desc 'Run the application on iPad emulator'
       task 'ipad', ->

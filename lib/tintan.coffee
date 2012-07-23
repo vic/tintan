@@ -53,6 +53,13 @@ class $
            fs.existsSync(path.join(iphone_dir, process.env.IOS_VERSION))
        fs.readdirSync(iphone_dir).sort()[-1..][0]
 
+  @android_version: @mem ->
+     android_dir = path.join(@android_home(), 'platforms')
+     if fs.existsSync android_dir
+       return process.env.ANDROID_VERSION if process.env.ANDROID_VERSION &&
+           fs.existsSync(path.join(android_dir, 'android-' + (process.env.ANDROID_VERSION - 1)))
+       (d.split('-')[1] for d in fs.readdirSync(android_dir)).sort((a,b)-> a - b)[-1..][0]
+
   @android_home: @mem ->
      brew_location = '/usr/local/Cellar/android-sdk'
      if process.env.ANDROID_SDK && fs.existsSync process.env.ANDROID_SDK
