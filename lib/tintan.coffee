@@ -4,6 +4,7 @@ fs         = require 'fs'
 libxml     = require 'libxmljs'
 spawn      = require('child_process').spawn
 
+
 class $
 
   @onTaskNamespace: (taskName, scope) ->
@@ -33,53 +34,52 @@ class $
   @tasks: (tintan)-> require('./tintan/tasks') tintan
 
   @home: @mem ->
-     dirs = [  process.env.TI_HOME
-       , '/Library/Application Support/Titanium'
-       , path.join(process.env.HOME, 'Library/Application Support/Titanium')
-       , path.join(process.env.HOME, '.titanium')
-       ]
-     return d for d in dirs when fs.existsSync d
+    dirs = [process.env.TI_HOME
+            '/Library/Application Support/Titanium'
+            path.join(process.env.HOME, 'Library/Application Support/Titanium')
+            path.join(process.env.HOME, '.titanium')
+    ]
+    return d for d in dirs when fs.existsSync d
 
   @os: {
-     'linux':  'linux'
-     'darwin': 'osx'
-     'win32':  'win'
-    }[require('os').platform()]
+    'linux':  'linux'
+    'darwin': 'osx'
+    'win32':  'win'
+  }[require('os').platform()]
 
   @ios_version: @mem ->
-     iphone_dir = path.join(process.env.HOME, 'Library', 'Application Support', 'iPhone Simulator')
-     if fs.existsSync iphone_dir
-       return process.env.IOS_VERSION if process.env.IOS_VERSION &&
-           fs.existsSync(path.join(iphone_dir, process.env.IOS_VERSION))
-       fs.readdirSync(iphone_dir).sort()[-1..][0]
+    iphone_dir = path.join(process.env.HOME, 'Library', 'Application Support', 'iPhone Simulator')
+    if fs.existsSync iphone_dir
+      return process.env.IOS_VERSION if process.env.IOS_VERSION &&
+        fs.existsSync(path.join(iphone_dir, process.env.IOS_VERSION))
+      fs.readdirSync(iphone_dir).sort()[-1..][0]
 
   @android_version: @mem ->
-     android_dir = path.join(@android_home(), 'platforms')
-     if fs.existsSync android_dir
-       return process.env.ANDROID_VERSION if process.env.ANDROID_VERSION &&
-           fs.existsSync(path.join(android_dir, 'android-' + (process.env.ANDROID_VERSION - 1)))
-       (d.split('-')[1] for d in fs.readdirSync(android_dir)).sort((a,b)-> a - b)[-1..][0]
+    android_dir = path.join(@android_home(), 'platforms')
+    if fs.existsSync android_dir
+      return process.env.ANDROID_VERSION if process.env.ANDROID_VERSION &&
+        fs.existsSync(path.join(android_dir, 'android-' + (process.env.ANDROID_VERSION - 1)))
+      (d.split('-')[1] for d in fs.readdirSync(android_dir)).sort((a,b)-> a - b)[-1..][0]
 
   @android_home: @mem ->
-     brew_location = '/usr/local/Cellar/android-sdk'
-     if process.env.ANDROID_SDK && fs.existsSync process.env.ANDROID_SDK
-       process.env.ANDROID_SDK
-     else if fs.existsSync brew_location
-       path.join brew_location, fs.readdirSync(brew_location).sort()[-1..][0]
-
+    brew_location = '/usr/local/Cellar/android-sdk'
+    if process.env.ANDROID_SDK && fs.existsSync process.env.ANDROID_SDK
+      process.env.ANDROID_SDK
+    else if fs.existsSync brew_location
+      path.join brew_location, fs.readdirSync(brew_location).sort()[-1..][0]
 
   @platform: process.env.TI_PLATFORM || {osx: 'iphone'}[@os] || 'android'
 
   @sdk: @mem ->
-     if fs.existsSync process.env.TI_SDK
-       process.env.TI_SDK
-     else
-       fs.readdirSync(path.join(@home(), 'mobilesdk', @os)).sort()[-1..][0]
+    if fs.existsSync process.env.TI_SDK
+      process.env.TI_SDK
+    else
+      fs.readdirSync(path.join(@home(), 'mobilesdk', @os)).sort()[-1..][0]
 
   @py: @mem ->
-     return py for py in [process.env.PYTHON, process.env.TI_PYTHON,
-                          process.env.PYTHON_EXECUTABLE] when fs.existsSync py
-     @pathSearch 'python'
+    return py for py in [process.env.PYTHON, process.env.TI_PYTHON,
+                         process.env.PYTHON_EXECUTABLE] when fs.existsSync py
+    @pathSearch 'python'
 
   @titan: (args ...)->
     @tipy.apply(this, [['titanium.py'], args])
@@ -100,6 +100,7 @@ class $
 class AppXML
 
   file: -> $._('tiapp.xml')
+  
   exist: -> fs.existsSync @file()
 
   constructor: ->
@@ -115,8 +116,7 @@ class AppXML
   name: -> @doc.get('./name').text()
 
   version: ->
-    v = @doc.get('./version').text()
-    v = v.split '.'
+    v = @doc.get('./version').text().split '.'
     if v.length < 3
       v = v.concat('0' for i in [0 .. (2 - v.length)])
     v.join '.'
@@ -124,10 +124,13 @@ class AppXML
   targets: (devices ...)->
     if devices.length > 0
       enabled = (device for device in devices when !!@doc.
-          get('./deployment-targets/target[@device="'+device+'" and contains(text(), "true")]'))
+        get('./deployment-targets/target[@device="' + device +
+            '" and contains(text(), "true")]'))
       enabled.length == devices.length
     else
-      @doc.find('./deployment-targets/target[contains(text(), "true")]/@device').map (i)-> i.text()
+      @doc.find('./deployment-targets/target[contains(text(), "true")]/@device')
+          .map (i)-> i.text()
+
 
 class Tintan
 
