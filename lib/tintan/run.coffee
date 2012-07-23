@@ -6,7 +6,7 @@ module.exports = (tintan)->
     if Tintan.appXML().targets 'android'
       desc 'Run the application on Android emulator'
       task 'android', ->
-        Tintan.$.tipy ['android', 'builder.py'], 'emulator',
+        Tintan.$.tipy ['android', 'builder.py'], 'simulator',
            Tintan.appXML().name(), Tintan.$.android_home(), process.cwd(), Tintan.appXML().id(),
            Tintan.$.android_version(), 'WVGA800'
 
