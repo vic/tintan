@@ -5,6 +5,7 @@ files = '
   build
   run
   install
+  distribute
 
 '.trim().split(/[^a-zA-Z\/\.]+/).map (s)-> './'+s
 
