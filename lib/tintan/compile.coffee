@@ -23,12 +23,10 @@ class Coffee
     name: 'compile:coffee'   # name of the compiler task to generate
 
 
-  init: (tintan, options = {})->
-    @options = options || {}
+  init: (tintan, @options = {})->
     @options[k] = v for k,v of DEFAULT_OPTIONS when !@options.hasOwnProperty(k)
-    options = options
-
-
+    options = @options
+    
     from = Tintan.$._(options.src)
     target = Tintan.$._(options.target)
     map = @map = compilerMap from, /\.coffee$/, (f)-> path.join(target, f).replace(/\.coffee$/, '.js')
@@ -52,6 +50,13 @@ class Coffee
       desc "Clean coffee-script produced files from #{options.target}"
       task 'clean', ->
         fs.unlink c for c in compiled
+
+    Tintan.$.onTaskNamespace options.name + ':watch', ->
+      desc "Watch coffee-script files in #{options.src} for changes and compile them into #{options.target}"
+      task 'watch', ->
+        c = spawn 'coffee', "--compile --watch --output #{options.target} #{options.src}".split(' ')
+        c.stdout.on 'data', (data)-> process.stdout.write data
+        c.stderr.on 'data', (data)-> process.stderr.write data
     true
 
    compile: (source, target, cb)->
