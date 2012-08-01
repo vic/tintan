@@ -59,15 +59,19 @@ class Coffee
         c.stderr.on 'data', (data)-> process.stderr.write data
     true
 
-   compile: (source, target, cb)->
-     jake.mkdirP path.dirname(target)
-     c = fs.readFileSync source, 'utf-8'
-     j = coffee.compile c
-     fs.writeFileSync target, j, 'utf-8'
-     cb()
+  compile: (source, target, cb)->
+    jake.mkdirP path.dirname(target)
+    c = fs.readFileSync source, 'utf-8'
+    try
+      j = coffee.compile c
+      fs.writeFileSync target, j, 'utf-8'
+    catch err
+      process.stderr.write "Error compiling #{source}\n"
+      process.stderr.write err.toString() + "\n"
+    cb()
 
-   invokeTask: ->
-     jake.Task[@options.name].invoke()
+  invokeTask: ->
+    jake.Task[@options.name].invoke()
 
    invokeClean: ->
      jake.Task[@options.name + ':clean'].invoke()
