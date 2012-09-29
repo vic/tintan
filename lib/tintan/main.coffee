@@ -10,7 +10,7 @@ jakePkg = JSON.parse fs.readFileSync "#{jakeLib}/../package.json", 'utf-8'
 
 jake.version = jakePkg.version
 
-process.addListener 'uncaugthException', (err)-> program.handleErr err
+process.addListener 'uncaughtException', (err)-> program.handleErr err
 
 global.jake = jake
 
@@ -22,6 +22,7 @@ program.parseArgs(args)
 main = (Tintan)->
 
   jake.opts = program.opts
+  jake.program = program
 
   jake[n] = v for own n, v of utils
 
@@ -44,7 +45,7 @@ main = (Tintan)->
   boot = require('./boot') Tintan
   if boot.ready()
     loader = new Loader()
-    loader.load(jake.opts.jakefile)
+    loader.load(jake.opts)
   else unless taskNames.length
     taskNames = ['boot:init']
 

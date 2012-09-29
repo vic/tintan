@@ -8,7 +8,7 @@ Tintan = null
 
 compilerMap = (root, rexp, transform = ((i)->i), base = [], map = {})->
   dir = path.join.apply(path, [root].concat(base))
-  path.existsSync(dir) and fs.readdirSync(dir).forEach (f)->
+  fs.existsSync(dir) and fs.readdirSync(dir).forEach (f)->
     if fs.statSync(path.join(dir, f)).isDirectory()
       compilerMap(root, rexp, transform, base.concat(f), map)
     else if rexp.test(f)
@@ -23,12 +23,10 @@ class Coffee
     name: 'compile:coffee'   # name of the compiler task to generate
 
 
-  init: (tintan, options = {})->
-    @options = options || {}
+  init: (tintan, @options = {})->
     @options[k] = v for k,v of DEFAULT_OPTIONS when !@options.hasOwnProperty(k)
-    options = options
-
-
+    options = @options
+    
     from = Tintan.$._(options.src)
     target = Tintan.$._(options.target)
     map = @map = compilerMap from, /\.coffee$/, (f)-> path.join(target, f).replace(/\.coffee$/, '.js')
@@ -52,20 +50,31 @@ class Coffee
       desc "Clean coffee-script produced files from #{options.target}"
       task 'clean', ->
         fs.unlink c for c in compiled
+
+    Tintan.$.onTaskNamespace options.name + ':watch', ->
+      desc "Watch coffee-script files in #{options.src} for changes and compile them into #{options.target}"
+      task 'watch', ->
+        c = spawn 'coffee', "--compile --watch --output #{options.target} #{options.src}".split(' ')
+        c.stdout.on 'data', (data)-> process.stdout.write data
+        c.stderr.on 'data', (data)-> process.stderr.write data
     true
 
-   compile: (source, target, cb)->
-     jake.mkdirP path.dirname(target)
-     c = fs.readFileSync source, 'utf-8'
-     j = coffee.compile c
-     fs.writeFileSync target, j, 'utf-8'
-     cb()
+  compile: (source, target, cb)->
+    jake.mkdirP path.dirname(target)
+    c = fs.readFileSync source, 'utf-8'
+    try
+      j = coffee.compile c
+      fs.writeFileSync target, j, 'utf-8'
+    catch err
+      process.stderr.write "Error compiling #{source}\n"
+      process.stderr.write err.toString() + "\n"
+    cb()
 
-   invokeTask: ->
-     jake.Task[@options.name].invoke()
+  invokeTask: ->
+    jake.Task[@options.name].invoke()
 
-   invokeClean: ->
-     jake.Task[@options.name + ':clean'].invoke()
+  invokeClean: ->
+    jake.Task[@options.name + ':clean'].invoke()
 
 
 Compilers =

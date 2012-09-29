@@ -13,7 +13,7 @@ T = (pth) ->
     info 'create'.green + ' ' + pth
     jake.mkdirP path.dirname @name
     temp = E pth + '.eco'
-    if path.existsSync temp
+    if fs.existsSync temp
       temp = fs.readFileSync temp, 'utf-8'
       value = eco.render temp, Tintan: Tintan
       fs.writeFileSync @name, value, 'utf-8'
