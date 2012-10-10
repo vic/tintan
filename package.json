@@ -15,6 +15,9 @@
   "bin": {
     "tintan": "./bin/tintan"
   },
+  "directories": {
+    "lib": "./lib"
+  },
   "dependencies": {
     "colors": ">=0.6.0",
     "jake": ">=0.3.5",

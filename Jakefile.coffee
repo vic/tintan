@@ -6,7 +6,7 @@ files   = [
 , 'README.md'
 , 'package.json'
 , 'index.js'
-, 'lib/*'
+, 'lib/**/*'
 , 'etc/*'
 , 'bin/*'
 , 'pub/*'
