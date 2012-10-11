@@ -60,7 +60,7 @@ class Coffee
     true
 
   compile: (source, target, cb)->
-    jake.mkdirP path.dirname(target)
+    jake.file.mkdirP path.dirname(target)
     c = fs.readFileSync source, 'utf-8'
     try
       j = coffee.compile c
@@ -68,6 +68,7 @@ class Coffee
     catch err
       process.stderr.write "Error compiling #{source}\n"
       process.stderr.write err.toString() + "\n"
+      fail("Error compiling #{source}\n")
     cb()
 
   invokeTask: ->

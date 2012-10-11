@@ -45,7 +45,8 @@ main = (Tintan)->
   boot = require('./boot') Tintan
   if boot.ready()
     loader = new Loader()
-    loader.load(jake.opts)
+    loader.loadFile(jake.opts.jakefile)
+    loader.loadDirectory(jake.opts.jakelibdir)
   else unless taskNames.length
     taskNames = ['boot:init']
 
@@ -57,4 +58,4 @@ main = (Tintan)->
   else
     jake.Task['__root__'].invoke()
 
-module.exports = program.preemptiveOption() and (->) or main
+module.exports = program.firstPreemptiveOption() and (->) or main
