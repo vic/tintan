@@ -20,13 +20,13 @@ module.exports = (tintan)->
     if Tintan.appXML().targets 'ipad'
       desc 'Run the application on iPad emulator'
       task 'ipad', ->
-        Tintan.$.tipy ['iphone', 'builder.py'], 'simulator',
-          Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
-          'ipad', 'retina'
+        Tintan.$.tipy ['iphone', 'builder.py'], 'run',
+          process.cwd(), Tintan.$.ios_version(), Tintan.appXML().id(), Tintan.appXML().name(),
+          'ipad'
 
     if Tintan.appXML().targets 'iphone'
       desc 'Run the application on iPhone emulator'
       task 'iphone', ->
-        Tintan.$.tipy ['iphone', 'builder.py'], 'simulator',
-          Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
-          'iphone', 'retina'
+        Tintan.$.tipy ['iphone', 'builder.py'], 'run',
+          process.cwd(), Tintan.$.ios_version(), Tintan.appXML().id(), Tintan.appXML().name(),
+          'iphone'
