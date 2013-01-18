@@ -32,7 +32,8 @@ def compile(config):
         print "       node", tintan, "-C", project_dir, 'tintan'
 
         proc = subprocess.Popen(['node', tintan, '-C', project_dir, 'tintan'],
-                                env={'TINTAN': to_json(c)}, stderr = sys.stderr, stdout = sys.stdout)
+                                env={'TINTAN': to_json(c), 'PATH': '$PATH:/usr/local/bin'},
+                                stderr = sys.stderr, stdout = sys.stdout)
         proc.communicate();
         ret = proc.wait()
 
