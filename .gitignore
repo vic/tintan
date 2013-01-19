@@ -5,3 +5,5 @@
 *.pyc
 node_modules/
 pkg/
+config.json
+*.sublime-*
