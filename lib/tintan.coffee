@@ -18,7 +18,7 @@ class $
     rec()
 
   @mem: (fn) -> (args ...)->
-    (arguments.callee['memo'] ||= {})[[].concat args] ||= fn.apply this, args
+    (arguments.callee['memo'] or= {})[[].concat args] or= fn.apply this, args
 
   @pathSearch: (bin, dirs = process.env.PATH.split(':')) ->
     return path.join(d, bin) for d in dirs when fs.existsSync path.join(d, bin)
@@ -50,57 +50,186 @@ class $
   @ios_version: @mem ->
     iphone_dir = path.join(process.env.HOME, 'Library', 'Application Support', 'iPhone Simulator')
     if fs.existsSync iphone_dir
-      return process.env.IOS_VERSION if process.env.IOS_VERSION &&
-        fs.existsSync(path.join(iphone_dir, process.env.IOS_VERSION))
-      fs.readdirSync(iphone_dir).sort()[-1..][0]
+      ver = process.env.IOS_VERSION or Tintan.config().get 'ios_version'
+      if ver and fs.existsSync(path.join(iphone_dir, ver))
+        ver
+      else
+        fs.readdirSync(iphone_dir).sort()[-1..][0]
 
   @android_version: @mem ->
     android_dir = path.join(@android_home(), 'platforms')
     if fs.existsSync android_dir
-      return process.env.ANDROID_VERSION if process.env.ANDROID_VERSION &&
-        fs.existsSync(path.join(android_dir, 'android-' + (process.env.ANDROID_VERSION - 1)))
-      (d.split('-')[1] for d in fs.readdirSync(android_dir)).sort((a,b)-> a - b)[-1..][0]
+      ver = process.env.ANDROID_VERSION or Tintan.config().get 'android_version'
+      if ver and fs.existsSync path.join(android_dir, 'android-' + (ver - 1))
+        ver
+      else
+        (d.split('-')[1] for d in fs.readdirSync(android_dir)).sort((a,b)-> a - b)[-1..][0]
 
   @android_home: @mem ->
-    brew_location = '/usr/local/Cellar/android-sdk'
-    if process.env.ANDROID_SDK && fs.existsSync process.env.ANDROID_SDK
-      process.env.ANDROID_SDK
-    else if fs.existsSync brew_location
-      path.join brew_location, fs.readdirSync(brew_location).sort()[-1..][0]
+    dir = process.env.ANDROID_SDK or Tintan.config().get 'android_sdk'
+    if dir and fs.existsSync dir
+      dir
+    else
+      brew_location = {
+        'osx': '/usr/local/Cellar/android-sdk'
+        'linux': '/opt/android-sdk'
+        'win': 'C:\\Program Files (x86)\\Android\\android-sdk'
+        }[@os]
+      if fs.existsSync brew_location
+        path.join brew_location, fs.readdirSync(brew_location).sort()[-1..][0]
 
-  @platform: process.env.TI_PLATFORM || {osx: 'iphone'}[@os] || 'android'
+  @platform: @mem ->
+    process.env.TI_PLATFORM or Tintan.config().get 'ti_platform' or {osx: 'iphone'}[@os] or 'android'
 
   @sdk: @mem ->
-    if fs.existsSync process.env.TI_SDK
-      process.env.TI_SDK
+    dir = process.env.TI_SDK or Tintan.config().get('ti_sdk') or Tintan.appXML().sdk()
+    if dir and fs.existsSync path.join(@home(), 'mobilesdk', @os, dir)
+      dir
     else
       fs.readdirSync(path.join(@home(), 'mobilesdk', @os)).sort()[-1..][0]
 
   @py: @mem ->
     return py for py in [process.env.PYTHON, process.env.TI_PYTHON,
-                         process.env.PYTHON_EXECUTABLE] when fs.existsSync py
+                         process.env.PYTHON_EXECUTABLE, Tintan.config().get 'ti_python'] when fs.existsSync py
     @pathSearch 'python'
 
   @titan: (args ...)->
     @tipy.apply(this, [['titanium.py'], args])
 
-  @fastdev: (args ...)=> @titan.apply this, ['fastdev'].concat(args || [])
+  @fastdev: (args ...)=> @titan.apply this, ['fastdev'].concat(args or [])
 
   @tipy: (ary, args ..., cb)->
     unless cb instanceof Function
       if args?.length then args.push cb else args = cb
       cb = ->
     tool = path.join.apply(path, [@home(), 'mobilesdk', @os, @sdk()].concat(ary))
-    p = spawn @py(), [tool].concat(args)
+
+    opts = {}
+    tf = (-> return true if /testflight/.test name for name in jake.program.taskNames)()
+    if Tintan.config().get('compile_js') is false
+      opts.env = 'SKIP_JS_MINIFY': true
+      opts.env[k] = v for k, v of process.env
+
+    p = spawn @py(), [tool].concat(args), opts
     p.stdout.on 'data', (data)-> process.stdout.write data
     p.stderr.on 'data', (data)-> process.stderr.write data
     p.on 'exit', cb
 
+class Config
+
+  DEFAULT_OPTIONS =
+    verbose: true
+    iced: false
+    compile_js: true
+    debug: false
+    debug_address: '127.0.0.1'
+    debug_port: 5858
+    android_avd: null
+    android_device: ''
+    android_sdk: null
+    keystore: null
+    storepass: null
+    key_alias: null
+    ios_version: null
+    ti_home: null
+    ti_platform: null
+    ti_python: null
+    ti_sdk: null
+    sublime_project: null
+
+  file: -> $._('tintan.config')
+
+  load: ->
+    @options = {} if !fs.existsSync(@file())
+    @options ?= JSON.parse(fs.readFileSync(@file(), 'utf-8'))
+    @options[k] = v for k,v of DEFAULT_OPTIONS when !@options.hasOwnProperty(k)
+    @save()
+
+  save: ->
+    if @options
+      fs.writeFileSync(@file(), JSON.stringify(@options, undefined, 2), 'utf-8')
+    else
+      console.log('Nothing to save.')
+
+  init: ->
+    @load()
+    @options[k] = v for k,v of DEFAULT_OPTIONS when !@options.hasOwnProperty(k)
+    @save()
+
+  display: ->
+    @load()
+    console.log(k + ': ' + v) for k, v of @options when @options.hasOwnProperty(k)
+
+  set: (opts = {}) ->
+    @load()
+    for k, v of opts
+      if @options.hasOwnProperty(k)
+        v = DEFAULT_OPTIONS[k] if v is 'default'
+        @options[k] = v
+        console.log('' + k + ' set to ' + v)
+        @save()
+      else
+        console.log('Unknown option: ' + k)
+
+  get: (option) ->
+    @load()
+    result = null
+    if @options.hasOwnProperty(option)
+      if @options[option] is 'true'
+        result = true
+      else if @options[option] is 'false'
+        result = false
+      else
+        result = @options[option]
+    return result
+
+  promptForNext: (i) =>
+    if i < 0
+      return
+    key = @config_opts[i]['k']
+    value = @config_opts[i]['v']
+    process.stdout.write(key + ':' + value + ', new value: ')
+    process.stdin.resume()
+    process.stdin.on('data', (text) =>
+      process.stdin.removeAllListeners('data')
+      text = text.replace(/(\r\n|\n|\r)/gm,"")
+      ans = text
+      if typeof(@options[key]) is 'boolean'
+        lowerText = '' + text.toLowerCase()
+
+        switch lowerText
+          when 't', 'true', 'tru', 'tr'
+            ans = true
+            break
+          when 'f', 'false', 'fal', 'fa', 'fals'
+            ans = false
+            break
+
+      process.stdin.pause()
+      if ans is ''
+        @promptForNext(--i)
+      else
+        @options[key] = ans
+        @save()
+        @promptForNext(--i)
+    )
+    @
+
+  promptForAll: =>
+    @load()
+    @config_opts = []
+    process.stdin.setEncoding('utf8')
+    i = 0
+    for k, v of @options when @options.hasOwnProperty(k)
+      @config_opts.push({k, v})
+      i++
+
+    @promptForNext(i-1)
 
 class AppXML
 
   file: -> $._('tiapp.xml')
-  
+
   exist: -> fs.existsSync @file()
 
   constructor: ->
@@ -114,6 +243,8 @@ class AppXML
   guid: -> @doc.get('./guid').text()
 
   name: -> @doc.get('./name').text()
+
+  sdk: -> @doc.get('./sdk-version').text()
 
   version: ->
     v = @doc.get('./version').text().split '.'
@@ -137,6 +268,7 @@ class Tintan
   @$ = $
   @version: $.pkg.version
   @appXML: $.mem -> new AppXML
+  @config = -> new Config
 
 
 module.exports = Tintan

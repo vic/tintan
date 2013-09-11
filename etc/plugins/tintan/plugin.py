@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Tintan compiler plugin.
-# 
+#
 
 import os, sys, subprocess
 
@@ -25,14 +25,15 @@ def compile(config):
         c.pop('android_builder', '')
         c.pop('logger', '')
         project_dir = c.get('project_dir')
-        
+
         tintan = os.path.join(project_dir, 'node_modules/tintan/bin/tintan')
-        
+
 	print "[INFO] Executing Tintan"
         print "       node", tintan, "-C", project_dir, 'tintan'
 
         proc = subprocess.Popen(['node', tintan, '-C', project_dir, 'tintan'],
-                                env={'TINTAN': to_json(c), 'PATH': '$PATH:/usr/local/bin'},
+                                env={'TINTAN': to_json(c),
+                                     'PATH': os.environ['PATH'] + ':/usr/local/bin'},
                                 stderr = sys.stderr, stdout = sys.stdout)
         proc.communicate();
         ret = proc.wait()
@@ -48,4 +49,4 @@ if __name__ == '__main__':
 		proj_dir = sys.argv[1]
 	config = {'project_dir': proj_dir, 'cli': True, 'tiapp': None}
         compile(config)
-                
+

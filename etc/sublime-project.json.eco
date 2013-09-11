@@ -1,0 +1,91 @@
+{
+	"folders":
+	[
+		{
+			"path": "<%= process.cwd() %>"
+		}
+	],
+	"settings":
+	{
+		"tab_size": 2
+	},
+	"build_systems":
+	[
+		{
+			"name": "Tintan",
+			"selector":  "source.js, source.coffee, source.iced, text.xml, text.html, source.css, source.tss, source.jss",
+			"env":
+			{
+				"ANDROID_SDK": "<%= @Tintan.$.android_home() %>"
+			},
+			"working_dir": "$project_path",
+			"cmd": ["tintan", "run:android"],
+			"variants":
+			[{
+				"cmd": ["tintan", "run:iphone"],
+				"name": "Run"
+			},{
+				"cmd": ["tintan", "run:ipad"],
+				"name": "Run on iPad simulator"
+			},{
+				"cmd": ["tintan", "install:android"],
+				"name": "Run on Android device"
+			},{
+				"cmd": ["tintan", "install:iphone"],
+				"name": "Run on iPhone device"
+			},{
+				"cmd": ["tintan", "install:ipad"],
+				"name": "Run on iPad device"
+			},{
+				"cmd": ["tintan", "build:android"],
+				"name": "Build for Android"
+			},{
+				"cmd": ["tintan", "build:iphone"],
+				"name": "Build for iPhone"
+			},{
+				"cmd": ["touch", "tiapp.xml"],
+				"name": "Full build (touch tiapp.xml)"
+			},{
+				"cmd": ["tintan", "compile"],
+				"name": "Compile all sources"
+			},{
+				"cmd": ["tintan", "compile:coffee"],
+				"name": "Compile CoffeeScript sources"
+			},{
+				"cmd": ["tintan", "compile:coffee:clean"],
+				"name": "Clean JS compiled from CoffeeScript"
+			},{
+				"cmd": ["tintan", "compile:coffee:watch"],
+				"name": "Watch and Compile CoffeeScript sources"
+			},{
+				"cmd": ["tintan", "distribute:android"],
+				"name": "Distribute for Android"
+			},{
+				"cmd": ["tintan", "distribute:iphone"],
+				"name": "Distribute for iPhone"
+			},{
+				"cmd": ["tintan", "distribute:ipad"],
+				"name": "Distribute for iPad"
+			},{
+				"cmd": ["tintan", "fastdev:start"],
+				"name": "Start the fastdev server"
+			},{
+				"cmd": ["tintan", "fastdev:stop"],
+				"name": "Stop the fastdev server"
+			},{
+				"cmd": ["tintan", "fastdev:status"],
+				"name": "Get the status of the fastdev server"
+			},{
+				"cmd": ["tintan", "fastdev:restart"],
+				"name": "Restart the app connected to fastdev server"
+			},{
+				"cmd": ["tintan", "fastdev:kill"],
+				"name": "Kill the app connected to fastdev server"
+			},{
+				"cmd": ["tintan", "upgrade"],
+				"name": "Upgrade node modules and Tintan plugin"
+			}]
+		}
+	]
+
+}

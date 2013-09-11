@@ -6,4 +6,7 @@
 node_modules/
 pkg/
 config.json
-*.sublime-*
+*.sublime-workspace
+*.sublime-project
+*.sh
+*.config

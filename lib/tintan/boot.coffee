@@ -3,6 +3,7 @@ path = require 'path'
 fs   = require 'fs'
 eco  = require 'eco'
 info = console.info
+xtnd = require 'deep-extend'
 
 {Tintan, $, _, E, appXML} = {}
 
@@ -23,19 +24,26 @@ T = (pth) ->
 T.deps = []
 
 npm_install = ->
-   info 'updating'.green + ' node modules'
-   npm = require('child_process').spawn 'npm', ['install', '-l']
-   npm.stdout.on 'data', (data)-> process.stdout.write(data)
-   npm.stderr.on 'data', (data)-> process.stderr.write(data)
-   npm.on 'exit', (code)=>
+  info 'updating'.green + ' node modules'
+  npm = require('child_process').spawn 'npm', ['install', '-l']
+  npm.stdout.on 'data', (data)-> process.stdout.write(data)
+  npm.stderr.on 'data', (data)-> process.stderr.write(data)
+  npm.on 'exit', (code)=>
     fail('npm install -l: failed with code '+code) if code != 0
     complete()
+
+sublimeProject = (Tintan) ->
+  cwd = process.cwd()
+  config = Tintan.config()
+  file = config.get 'sublime_project'
+  file or= (f for f in fs.readdirSync(cwd) when /\.sublime-project$/.test f).sort()[0]
+  file or= (cwd = cwd.split('/'))[cwd.length - 1]
 
 class Boot
 
   ready: ->
     files = ['package.json', 'Jakefile.coffee', 'plugins/tintan/plugin.py']
-    return false for v in files when jake.Task['boot:'+_(v)].shouldRunAction()
+    return false for v in files when jake.Task['boot:'+_(v)].isNeeded()
     true
 
   constructor: (Ti)->
@@ -55,13 +63,15 @@ class Boot
 
       desc 'Register plugin on tiapp.xml'
       task 'plugin.xml', ->
-        unless appXML.plugin()
+        plugin = appXML.plugin()
+        pluginVersion = plugin?.attr('version')?.value()
+        unless pluginVersion is Tintan.version
           info 'register'.green + ' tintan plugin on tiapp.xml'
           xml = appXML.doc
           plugins = xml.get './plugins'
           unless plugins
             plugins = xml.root().node 'plugins', ''
-          plugin = plugins.node 'plugin', 'tintan'
+          plugin ?= plugins.node 'plugin', 'tintan'
           plugin.attr version: Tintan.version
           xml.encoding 'utf-8'
           fs.writeFileSync appXML.file(), xml.toString(), 'utf-8'
@@ -75,6 +85,24 @@ class Boot
       desc 'Create a basic Jakefile'
       task 'Jakefile.coffee': _ 'Jakefile.coffee'
 
+      T 'tintan.config'
+      desc 'Create a default config file'
+      task 'tintan.config': _ 'tintan.config'
+      T.deps.push 'tintan.config'
+
+      filename = sublimeProject Tintan
+      desc "Add Tintan build system to #{filename}"
+      task "sublime", ->
+        tmpl = fs.readFileSync (E 'sublime-project.json.eco'), 'utf-8'
+        value = eco.render tmpl, Tintan: Tintan
+        if fs.existsSync filename
+          value = JSON.parse value
+          existing = JSON.parse(fs.readFileSync(filename, 'utf-8'))
+          existing.build_systems = xtnd (existing.build_systems or {}), value.build_systems
+          value = JSON.stringify(existing, undefined, 2)
+        fs.writeFileSync filename, value, 'utf-8'
+        Tintan.config().set sublime_project: filename
+
       desc 'Install node modules with npm'
       task 'npm', [_('package.json')], npm_install, async: true
       T.deps.push 'npm'
@@ -83,5 +111,9 @@ class Boot
       task 'init', T.deps, ->
         info 'Tintan initialized'.bold.italic
         info 'Take a look at your Jakefile.coffee'
+
+    desc 'Upgrade node modules and Tintan plugin'
+    task 'upgrade', ['boot:npm','boot:plugin.py','boot:plugin.xml'], ->
+      info 'upgrade complete'.green
 
 module.exports = (Tintan)-> new Boot Tintan

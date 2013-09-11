@@ -2,6 +2,7 @@ files = '
 
   fastdev
   compile
+  config
   build
   run
   install
