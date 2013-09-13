@@ -89,7 +89,6 @@ class Boot
       T 'tintan.config'
       desc 'Create a default config file'
       task 'tintan.config': _ 'tintan.config'
-      T.deps.push 'tintan.config'
 
       filename = sublimeProject Tintan
       desc "Add Tintan build system to #{filename}"
