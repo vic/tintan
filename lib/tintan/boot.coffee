@@ -52,13 +52,14 @@ class Boot
     appXML = Tintan.appXML()
     {$} = Tintan
     {E, _} = $
+    plugin_py = 'plugins/tintan/plugin.py'
 
     namespace 'boot', ->
 
-      T 'plugins/tintan/plugin.py'
+      T plugin_py
 
       desc 'Install the Tintan plugin for Titanium Studio'
-      task 'plugin.py': _ 'plugins/tintan/plugin.py'
+      task 'plugin.py': _ plugin_py
 
 
       desc 'Register plugin on tiapp.xml'
@@ -114,6 +115,11 @@ class Boot
 
     desc 'Upgrade node modules and Tintan plugin'
     task 'upgrade', ['boot:npm','boot:plugin.py','boot:plugin.xml'], ->
+      etc_plugin_py = E plugin_py
+      upgrade_plugin = file _(plugin_py), [etc_plugin_py], ->
+        info 'upgrading'.green + ' ' + @name
+        jake.cpR etc_plugin_py, @name
+      upgrade_plugin.invoke()
       info 'upgrade complete'.green
 
 module.exports = (Tintan)-> new Boot Tintan
