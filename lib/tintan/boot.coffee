@@ -91,17 +91,19 @@ class Boot
       task 'tintan.config': _ 'tintan.config'
 
       filename = sublimeProject Tintan
-      desc "Add Tintan build system to #{filename}"
-      task "sublime", ->
+      desc 'Add Tintan build system to #{filename}'
+      task 'sublime', ->
         tmpl = fs.readFileSync (E 'sublime-project.json.eco'), 'utf-8'
         value = eco.render tmpl, Tintan: Tintan
         if fs.existsSync filename
+          info 'upgrading'.green + ' ' + filename
           value = JSON.parse value
           existing = JSON.parse(fs.readFileSync(filename, 'utf-8'))
           existing.build_systems = xtnd (existing.build_systems or {}), value.build_systems
           value = JSON.stringify(existing, undefined, 2)
         fs.writeFileSync filename, value, 'utf-8'
         Tintan.config().set sublime_project: filename
+      T.deps.push 'sublime'
 
       desc 'Install node modules with npm'
       task 'npm', [_('package.json')], npm_install, async: true
@@ -113,7 +115,7 @@ class Boot
         info 'Take a look at your Jakefile.coffee'
 
     desc 'Upgrade node modules and Tintan plugin'
-    task 'upgrade', ['boot:npm','boot:plugin.py','boot:plugin.xml'], ->
+    task 'upgrade', ['boot:npm','boot:plugin.py','boot:plugin.xml', 'boot:sublime'], ->
       etc_plugin_py = E plugin_py
       upgrade_plugin = file _(plugin_py), [etc_plugin_py], ->
         info 'upgrading'.green + ' ' + @name
