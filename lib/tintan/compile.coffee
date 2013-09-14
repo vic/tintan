@@ -18,18 +18,20 @@ compilerMap = (root, rexp, transform = ((i)->i), base = [], map = {})->
 class Coffee
 
   DEFAULT_OPTIONS =
-    src: 'src/coffee'        # directory to take .coffee files from
+    src: 'src/coffee'        # directory to take .coffee or .iced files from
     target: 'Resources'      # directory to put .js files into
+    ext: '\.(coffee|iced)$'  # extensions to compile
     name: 'compile:coffee'   # name of the compiler task to generate
 
 
   init: (tintan, @options = {})->
     @options[k] = v for k,v of DEFAULT_OPTIONS when !@options.hasOwnProperty(k)
+    @options.ext = (new RegExp @options.ext) if typeof @options.ext is 'string'
     options = @options
 
     from = Tintan.$._(options.src)
     target = Tintan.$._(options.target)
-    map = @map = compilerMap from, /\.coffee$/, (f)-> path.join(target, f).replace(/\.coffee$/, '.js')
+    map = @map = compilerMap from, options.ext, (f)-> path.join(target, f).replace(options.ext, '.js')
 
     compile = @compile
     sources = (s for s of map)
