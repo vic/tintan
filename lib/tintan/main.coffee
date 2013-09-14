@@ -33,6 +33,7 @@ main = (Tintan)->
   process.env[n] = v for own n, v of jake.env
   process.chdir(jake.opts.directory) if jake.opts.directory
 
+  api.invoke = (taskname, args...) -> jake.Task[taskname].invoke.apply jake.Task[taskname], args
   global[n] = v for own n, v of api
 
   if process.env.TINTAN
@@ -56,6 +57,6 @@ main = (Tintan)->
   if jake.opts.tasks
     jake.showAllTaskDescriptions jake.opts.tasks
   else
-    jake.Task['__root__'].invoke()
+    invoke '__root__'
 
 module.exports = program.firstPreemptiveOption() and (->) or main

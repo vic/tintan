@@ -116,11 +116,11 @@ class Boot
     desc 'Upgrade node modules and Tintan plugin'
     task 'upgrade', ['boot:plugin.py','boot:plugin.xml', 'boot:sublime'], ->
       etc_plugin_py = E plugin_py
-      upgrade_plugin = file _(plugin_py), [etc_plugin_py], ->
+      file _(plugin_py), [etc_plugin_py], ->
         info 'upgrading'.green + ' ' + @name
         jake.cpR etc_plugin_py, @name
 
-      npm_update = task 'npm_update', [_('package.json')], ->
+      task 'npm_update', [_('package.json')], ->
         info 'bumping tintan version in package.json to'.green + ' ' + Tintan.version
         package_json = fs.readFileSync _('package.json'), 'utf-8'
         package_json = JSON.parse package_json
@@ -131,10 +131,10 @@ class Boot
           package_json.repository = gitrepo
         package_json = JSON.stringify(package_json, undefined, 2)
         fs.writeFileSync _('package.json'), package_json, 'utf-8'
-        jake.Task['boot:npm'].invoke()
+        invoke 'boot:npm'
 
-      upgrade_plugin.invoke()
-      npm_update.invoke()
+      invoke _ plugin_py
+      invoke 'npm_update'
 
       info 'upgrade complete'.green
 

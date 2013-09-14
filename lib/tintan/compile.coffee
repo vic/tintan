@@ -125,11 +125,9 @@ class Coffee
 
     return result
 
-  invokeTask: ->
-    jake.Task[@options.name].invoke()
+  invokeTask: -> invoke @options.name
 
-  invokeClean: ->
-    jake.Task[@options.name + ':clean'].invoke()
+  invokeClean: -> invoke @options.name + ':clean'
 
 
 Compilers =
