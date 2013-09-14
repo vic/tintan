@@ -2,6 +2,7 @@
 {
   "name": "<%= @Tintan.appXML().name() %>",
   "version": "<%= @Tintan.appXML().version() %>",
+  "repository": <%- JSON.stringify @Tintan.$.gitrepo() %>,
   "dependencies": {
   },
   "devDependencies": <%- JSON.stringify devDeps %>

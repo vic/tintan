@@ -3,6 +3,7 @@ path       = require 'path'
 fs         = require 'fs'
 libxml     = require 'libxmljs'
 spawn      = require('child_process').spawn
+ini        = require 'ini'
 
 
 class $
@@ -114,6 +115,15 @@ class $
     p.stdout.on 'data', (data)-> process.stdout.write data
     p.stderr.on 'data', (data)-> process.stderr.write data
     p.on 'exit', cb
+
+  @gitrepo: @mem ->
+    gitconfig = ini.parse fs.readFileSync $._('.git/config'), 'utf-8'
+    repo = gitconfig['remote "origin"']?.url
+    unless repo
+      remote = (k for k of gitconfig when /^remote/.test k).sort()[0]
+      repo = gitconfig[remote].url if remote
+    {type: 'git', url: repo} or {}
+
 
 class Config
 

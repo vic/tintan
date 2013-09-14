@@ -126,6 +126,10 @@ class Boot
         package_json = fs.readFileSync _('package.json'), 'utf-8'
         package_json = JSON.parse package_json
         package_json.devDependencies.tintan = Tintan.version
+        if (not package_json.repository) or package_json.repository is {}
+          gitrepo = Tintan.$.gitrepo()
+          info 'adding project git repo to package.json:'.green + ' ' + gitrepo.url
+          package_json.repository = gitrepo
         package_json = JSON.stringify(package_json, undefined, 2)
         fs.writeFileSync _('package.json'), package_json, 'utf-8'
         jake.Task['boot:npm'].invoke()
