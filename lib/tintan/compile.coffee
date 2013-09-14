@@ -72,8 +72,28 @@ class Coffee
       if conf.envOrGet('verbose') is true
         console.log('Compiling ' + target + ' with ' + (if iced then 'iced-' else '') + 'coffee-script' )
 
-      j = coffee.compile c
+      if conf.envOrGet('source_maps') is true
+        sourceFile = source.split('/')[-1..][0]
+        compileOpts =
+          sourceMap: true
+          filename: source
+          sourceFiles: [@options.src + '/' + sourceFile]
+          generatedFile: @options.target + '/' + sourceFile.replace @options.ext, '.js'
+
+        jsm = coffee.compile c, compileOpts
+        j = jsm.js
+        sm = jsm.v3SourceMap
+
+        mapFile = sourceFile.replace @options.ext, '.map'
+        mapDir = path.dirname target.replace @options.target, 'build/map/' + @options.target
+        jake.file.mkdirP mapDir
+        fs.writeFileSync "#{mapDir}/#{mapFile}", sm, 'utf-8'
+
+      else
+        j = coffee.compile c
+
       fs.writeFileSync target, j, 'utf-8'
+
     catch err
       process.stderr.write "Error compiling #{source}\n"
       process.stderr.write err.toString() + "\n"

@@ -131,6 +131,7 @@ class Config
     verbose: true
     iced: false
     compile_js: true
+    source_maps: true
     debug: false
     debug_address: '127.0.0.1'
     debug_port: 5858
