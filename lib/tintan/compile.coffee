@@ -63,13 +63,11 @@ class Coffee
     jake.file.mkdirP path.dirname(target)
     c = fs.readFileSync source, 'utf-8'
     try
-      iced = jake.program.envVars['iced']
-      iced ?= Tintan.config().get('iced')
+      conf = Tintan.config()
+      iced = conf.envOrGet('iced')
       coffee = require('iced-coffee-script') if iced is true
 
-      verbose = jake.program.envVars['verbose']
-      verbose ?= Tintan.config().get('verbose')
-      if verbose is true
+      if conf.envOrGet('verbose') is true
         console.log('Compiling ' + target + ' with ' + (if iced then 'iced-' else '') + 'coffee-script' )
 
       j = coffee.compile c
@@ -83,7 +81,7 @@ class Coffee
   getCoffeePath: ->
     coffeePath = ''
     result = ''
-    if Tintan.config().get('iced') is true
+    if Tintan.config().envOrGet('iced') is true
       coffeePath = require.resolve('iced-coffee-script')
     else
       coffeePath = require.resolve('coffee-script')

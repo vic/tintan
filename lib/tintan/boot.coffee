@@ -34,8 +34,7 @@ npm_install = ->
 
 sublimeProject = (Tintan) ->
   cwd = process.cwd()
-  config = Tintan.config()
-  file = config.get 'sublime_project'
+  file = Tintan.config().envOrGet 'sublime_project'
   file or= (f for f in fs.readdirSync(cwd) when /\.sublime-project$/.test f).sort()[0]
   file or= (cwd = cwd.split('/'))[cwd.length - 1]
 

@@ -193,6 +193,10 @@ class Config
         result = @options[option]
     return result
 
+  envOrGet: (option) ->
+    o = jake.program.envVars[option]
+    o ?= @get option
+
   promptForNext: (i) =>
     if i < 0
       return
