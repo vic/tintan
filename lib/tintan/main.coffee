@@ -28,6 +28,7 @@ main = (Tintan)->
   jake.FileList = require("#{jakeLib}/file_list").FileList
   jake.PackageTask = require("#{jakeLib}/file_list").PackageTask
   jake.NpmPublishTask = require("#{jakeLib}/file_list").NpmPublishTask
+  jake.WatchTask = require("./watch_task").WatchTask
 
   process.env[n] = v for own n, v of jake.env
   process.chdir(jake.opts.directory) if jake.opts.directory

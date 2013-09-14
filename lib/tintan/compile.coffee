@@ -55,10 +55,9 @@ class Coffee
 
     Tintan.$.onTaskNamespace options.name + ':watch', =>
       desc "Watch coffee-script files in #{options.src} for changes and compile them into #{options.target}"
-      task 'watch', =>
-        c = spawn '' + @getCoffeePath(), "--compile --watch --output #{options.target} #{options.src}".split(' ')
-        c.stdout.on 'data', (data)-> process.stdout.write data
-        c.stderr.on 'data', (data)-> process.stderr.write data
+      watchTask 'watch', 'compile:coffee', ->
+        @watchFiles.include [ options.ext ]
+
     true
 
   compile: (source, target, cb)=>
