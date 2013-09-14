@@ -115,12 +115,24 @@ class Boot
         info 'Take a look at your Jakefile.coffee'
 
     desc 'Upgrade node modules and Tintan plugin'
-    task 'upgrade', ['boot:npm','boot:plugin.py','boot:plugin.xml', 'boot:sublime'], ->
+    task 'upgrade', ['boot:plugin.py','boot:plugin.xml', 'boot:sublime'], ->
       etc_plugin_py = E plugin_py
       upgrade_plugin = file _(plugin_py), [etc_plugin_py], ->
         info 'upgrading'.green + ' ' + @name
         jake.cpR etc_plugin_py, @name
+
+      npm_update = task 'npm_update', [_('package.json')], ->
+        info 'bumping tintan version in package.json to'.green + ' ' + Tintan.version
+        package_json = fs.readFileSync _('package.json'), 'utf-8'
+        package_json = JSON.parse package_json
+        package_json.devDependencies.tintan = Tintan.version
+        package_json = JSON.stringify(package_json, undefined, 2)
+        fs.writeFileSync _('package.json'), package_json, 'utf-8'
+        jake.Task['boot:npm'].invoke()
+
       upgrade_plugin.invoke()
+      npm_update.invoke()
+
       info 'upgrade complete'.green
 
 module.exports = (Tintan)-> new Boot Tintan
