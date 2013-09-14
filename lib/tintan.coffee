@@ -168,7 +168,7 @@ class Config
 
   display: ->
     @load()
-    console.log(k + ': ' + v) for k, v of @options when @options.hasOwnProperty(k)
+    console.log(k + ': ' + ('' + v).yellow) for k, v of @options when @options.hasOwnProperty(k)
 
   set: (opts = {}) ->
     @load()
@@ -176,10 +176,10 @@ class Config
       if @options.hasOwnProperty(k)
         v = DEFAULT_OPTIONS[k] if v is 'default'
         @options[k] = v
-        console.log('' + k + ' set to ' + v)
+        console.log('' + k + ' set to '.green + v)
         @save()
       else
-        console.log('Unknown option: ' + k)
+        console.log('Unknown option: '.red + k)
 
   get: (option) ->
     @load()
