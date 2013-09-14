@@ -1,12 +1,25 @@
 {
   "name": "tintan",
-  "description": "Titanium development with style.",
-  "version": "0.1.0",
+  "description": "Titanium development with style.  A suite of Jake build tasks which integrate with Sublime Text and Titanium Studio.  Usable on all platforms.",
+  "version": "0.2.0",
+  "license": "Apache 2.0",
+  "contributors": [
+    { "name": "Victor Borja", "url": "https://github.com/vic" },
+    { "name": "Charles Phillips", "url": "https://github.com/doublerebel" },
+    { "name": "Sam Moggach", "url": "https://github.com/ezmicken" }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vic/tintan"
+  },
+  "bugs": "https://github.com/vic/tintan/issues",
   "keywords": [
     "titanium",
     "mobile",
+    "iced",
     "coffee",
     "clojure",
+    "sublime",
     "jasmine",
     "bdd",
     "tdd"
