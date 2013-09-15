@@ -4,7 +4,7 @@ fs         = require 'fs'
 libxml     = require 'libxmljs'
 spawn      = require('child_process').spawn
 ini        = require 'ini'
-
+source_map = require('source-map-support').install()
 
 class $
 
