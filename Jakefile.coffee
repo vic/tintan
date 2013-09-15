@@ -17,3 +17,5 @@ new jake.PackageTask pkgJSON.name, pkgJSON.version, ->
   @needTarGz = true
 
 new jake.NpmPublishTask pkgJSON.name, files
+
+task 'default', -> jake.showAllTaskDescriptions true
