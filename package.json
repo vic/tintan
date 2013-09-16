@@ -44,7 +44,7 @@
     "btoa": ">=1.1.1"
   },
   "optionalDependencies": {
-    "iced-coffee-script": ">= 1.4.0"
+    "iced-coffee-script": ">=1.6.3-g"
   },
   "devDependencies": {},
   "engines": {
