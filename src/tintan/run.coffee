@@ -23,7 +23,7 @@ module.exports = (tintan)->
         android_avd or= conf.envOrGet('android_avd')
 
         if conf.envOrGet('debug') is true
-          debugString = conf.envOrGet('debug_address') + ':' + conf.envOrGet('debug_port')
+          debug_string = conf.envOrGet('debug_address') + ':' + conf.envOrGet('debug_port')
 
           Tintan.$.tipy ['android', 'builder.py'], 'simulator',
             Tintan.appXML().name(), Tintan.$.android_home(), process.cwd(), Tintan.appXML().id(),
