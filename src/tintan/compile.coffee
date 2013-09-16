@@ -3,6 +3,7 @@ fs     = require 'fs'
 path   = require 'path'
 coffee = require 'coffee-script'
 spawn  = require('child_process').spawn
+touch  = require 'touch'
 
 Tintan = null
 
@@ -47,6 +48,12 @@ class Coffee
       desc "Compile coffee-script sources into #{options.target}"
       task name, compiled, ->
         console.log 'compiled'.green + ' coffee-script sources into ' + options.target
+
+    Tintan.$.onTaskNamespace options.name + ':force', ->
+      desc "Compile all coffee-script (regardless of mod time) into #{options.target}"
+      task 'force', ->
+        for source, task of map then do (task) ->
+          touch source, {mtime: true}, -> invoke task
 
     Tintan.$.onTaskNamespace options.name + ':clean', ->
       desc "Clean coffee-script produced files from #{options.target}"
