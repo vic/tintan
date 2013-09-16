@@ -56,6 +56,13 @@ class Coffee
         for source, task of map then do (task) ->
           touch source, {mtime: true}, -> invoke task
 
+    Tintan.$.onTaskNamespace options.name + ':dist', ->
+      desc "Compile all coffee-script for distribution (no source maps) into #{options.target}"
+      task 'dist', ->
+        jake.program.envVars['source_maps'] = false
+        for source, task of map then do (task) ->
+          touch source, {mtime: true}, -> invoke task
+
     Tintan.$.onTaskNamespace options.name + ':clean', ->
       desc "Clean coffee-script produced files from #{options.target}"
       task 'clean', ->
