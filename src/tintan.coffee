@@ -107,7 +107,7 @@ class $
 
     opts = {}
     tf = (-> return true if /testflight/.test name for name in jake.program.taskNames)()
-    if Tintan.config().get('compile_js') is false
+    if (tf and not Tintan.config().get('tf_compile_js')) or Tintan.config().get('compile_js') is false
       opts.env = 'SKIP_JS_MINIFY': true
       opts.env[k] = v for k, v of process.env
 
@@ -147,6 +147,9 @@ class Config
     ti_python: null
     ti_sdk: null
     sublime_project: null
+    tf_compile_js: false
+    tf_api_token: null
+    tf_team_token: null
 
   file: -> $._('tintan.config')
 
