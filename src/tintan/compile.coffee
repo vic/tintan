@@ -1,6 +1,7 @@
 require 'colors'
 fs     = require 'fs'
 path   = require 'path'
+btoa   = require 'btoa'
 coffee = require 'coffee-script'
 spawn  = require('child_process').spawn
 touch  = require 'touch'
@@ -83,17 +84,15 @@ class Coffee
         compileOpts =
           sourceMap: true
           filename: source
-          sourceFiles: [@options.src + '/' + sourceFile]
-          generatedFile: @options.target + '/' + sourceFile.replace @options.ext, '.js'
+          sourceFiles: ['file://' + process.cwd() + '/' + @options.src + source.split(@options.src)[-1..][0]]
+          generatedFile: @options.target + target.split(@options.target)[-1..][0]
 
         jsm = coffee.compile c, compileOpts
         j = jsm.js
         sm = jsm.v3SourceMap
 
-        mapFile = sourceFile.replace @options.ext, '.map'
-        mapDir = path.dirname target.replace @options.target, 'build/map/' + @options.target
-        jake.file.mkdirP mapDir
-        fs.writeFileSync "#{mapDir}/#{mapFile}", sm, 'utf-8'
+        sf = @options.src + source.split(@options.src)[-1..][0]
+        j = "#{j}\n//# sourceMappingURL=data:application/json;base64,#{btoa unescape encodeURIComponent sm}\n//# sourceURL=#{sf}"
 
       else
         j = coffee.compile c
