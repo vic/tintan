@@ -40,7 +40,8 @@
     "deep-extend": ">=0.2.5",
     "ini": ">=1.1.0",
     "source-map-support": ">=0.2.3",
-    "touch": ">=0.0.2"
+    "touch": ">=0.0.2",
+    "btoa": ">=1.1.1"
   },
   "optionalDependencies": {
     "iced-coffee-script": ">= 1.4.0"
