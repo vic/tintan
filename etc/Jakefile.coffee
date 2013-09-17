@@ -5,4 +5,5 @@
 tintan = require('tintan')
 
 # Make the default task depend on build.
+# Default task is invoked by compiler plugin (plugin.py)
 task 'default', ['build']

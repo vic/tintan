@@ -44,19 +44,29 @@ def compile(config):
                 tintan = temp
                 break
 
+    if not os.path.isfile(tintan):
+        print "[WARN] Tintan not found, skipping tintan"
+        return
+
     print "[INFO] Executing Tintan"
     print "       node", tintan, "-C", project_dir, 'tintan'
 
+    env = os.environ.copy()
+    env['TINTAN'] = to_json(c)
+    env['PATH'] = os.environ['PATH'] + ':/usr/local/bin'
+    env['NODE_PATH'] = node_path
+
+    # Flush the above print calls before opening the subprocess
+    sys.stdout.flush()
     proc = subprocess.Popen(['node', tintan, '-C', project_dir, 'tintan'],
-                            env={'TINTAN': to_json(c),
-                                 'PATH': os.environ['PATH'] + ':/usr/local/bin',
-                                 'NODE_PATH': node_path},
+                            env = env,
                             stderr = sys.stderr, stdout = sys.stdout)
     proc.communicate();
     ret = proc.wait()
 
     if ret != 0:
         raise Exception('Tintan terminated with exitcode: '+str(ret))
+    sys.exit(0)
 
 if __name__ == '__main__':
     proj_dir = None
