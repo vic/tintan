@@ -148,10 +148,15 @@ module.exports = (tintan)->
 
   compilers = []
 
-  desc 'Compile sources'
-  task 'compile', ->
-    compiler.invokeTask() for compiler in compilers
+  Tintan.$.onTaskNamespace 'compile', (name) ->
+    desc 'Compile sources'
+    task name, ->
+      compiler.invokeTask() for compiler in compilers
 
+  Tintan.$.onTaskNamespace 'compile:dist', ->
+    desc 'Compile sources for distribution'
+    task 'dist', ->
+      invoke "#{compiler.options.name}:dist" for compiler in compilers
 
   tintan.compile = (lang, args...)->
     Compiler = Compilers[lang]

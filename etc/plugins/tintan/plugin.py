@@ -66,7 +66,6 @@ def compile(config):
 
     if ret != 0:
         raise Exception('Tintan terminated with exitcode: '+str(ret))
-    sys.exit(0)
 
 if __name__ == '__main__':
     proj_dir = None
