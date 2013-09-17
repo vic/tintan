@@ -15,7 +15,7 @@ WatchTask = (name, taskNames, definition) ->
 
   definition.call this if typeof definition is 'function'
 
-  desc 'Runs these tasks: ' + @watchTasks.join(', ')
+  desc 'Watches and runs these tasks: ' + @watchTasks.join(', ')
   task name, ->
     console.log 'WatchTask started for: ' + self.watchTasks.join(', ')
     jake.watch '.', {includePattern: /.+/}, (filePath) ->

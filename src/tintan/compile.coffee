@@ -58,8 +58,7 @@ class Coffee
       desc "Compile all coffee-script for distribution (no source maps) into #{options.target}"
       task 'dist', ->
         jake.program.envVars['source_maps'] = false
-        for source, task of map then do (task) ->
-          touch source, {mtime: true}, -> invoke task
+        invoke "#{options.name}:force"
 
     Tintan.$.onTaskNamespace options.name + ':clean', ->
       desc "Clean coffee-script produced files from #{options.target}"
@@ -67,7 +66,6 @@ class Coffee
         fs.unlink c for c in compiled
 
     Tintan.$.onTaskNamespace options.name + ':watch', =>
-      desc "Watch coffee-script files in #{options.src} for changes and compile them into #{options.target}"
       watchTask 'watch', 'compile:coffee', ->
         @watchFiles.include [ options.ext ]
 
