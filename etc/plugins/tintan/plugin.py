@@ -20,6 +20,9 @@ else:
     to_json = json.write
 
 def compile(config):
+    if 'TINTAN' in os.environ or 'TINTAN_CLI' in os.environ:
+        return
+
     c = config.copy()
     c.pop('tiapp', '')
     c.pop('android_builder', '')

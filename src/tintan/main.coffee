@@ -14,6 +14,7 @@ process.addListener 'uncaughtException', (err)-> program.handleErr err
 
 global.jake = jake
 
+process.env.TINTAN_CLI = true if /bin\/tintan$/.test process.argv[1]
 args = process.argv.slice(2)
 program = new Program()
 program.parseArgs(args)
