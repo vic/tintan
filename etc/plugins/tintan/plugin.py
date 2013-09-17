@@ -26,10 +26,16 @@ def compile(config):
     c.pop('logger', '')
     project_dir = c.get('project_dir')
 
+    if 'NODE_PATH' in os.environ:
+        node_path = os.environ['NODE_PATH']
+    else:
+        print "[WARN] NODE_PATH not defined, guessing at NODE_PATH"
+        node_path = "/usr/lib/nodejs:/usr/lib/node_modules:/usr/local/lib/node_modules:/usr/share/javascript"
+
     tintan = os.path.join(project_dir, 'node_modules/tintan/bin/tintan')
     if not os.path.isfile(tintan):
-        node_path = os.environ['NODE_PATH'].split(':')
-        for path in node_path:
+        node_paths = node_path.split(':')
+        for path in node_paths:
             temp = os.path.join(path, 'tintan/bin/tintan')
             if os.path.isfile(temp):
                 tintan = temp
@@ -41,7 +47,7 @@ def compile(config):
     proc = subprocess.Popen(['node', tintan, '-C', project_dir, 'tintan'],
                             env={'TINTAN': to_json(c),
                                  'PATH': os.environ['PATH'] + ':/usr/local/bin',
-                                 'NODE_PATH': os.environ['NODE_PATH']},
+                                 'NODE_PATH': node_path},
                             stderr = sys.stderr, stdout = sys.stdout)
     proc.communicate();
     ret = proc.wait()

@@ -1,8 +1,18 @@
 #!/usr/bin/env node
 var path  = require('path')
   , fs    = require('fs')
+  , spawn = require('child_process').spawn
   , local = path.join( process.cwd(), 'node_modules/tintan/lib/tintan' )
   , globl = path.join( __dirname, '../lib/tintan' )
   , exist = fs.existsSync( local )
+
+if (!process.env.NODE_PATH) {
+    args = Array.prototype.slice.call(process.argv, 0)
+    args.shift()
+    process.env.NODE_PATH = path.join( __dirname, '../..' )
+
+    node = spawn(process.argv[0], args, {env: process.env, stdio: 'inherit'})
+    return
+}
 require('coffee-script')
 require(exist ? local : globl).$.main()
