@@ -1,7 +1,7 @@
 {
   "name": "tintan",
   "description": "Titanium development with style.  A suite of Jake build tasks which integrate with Sublime Text and Titanium Studio.  Usable on all platforms.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "Apache 2.0",
   "contributors": [
     { "name": "Victor Borja", "url": "https://github.com/vic" },
