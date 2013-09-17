@@ -22,16 +22,17 @@ module.exports = (tintan)->
             Tintan.$.android_version(), android_device
 
 
-    if Tintan.appXML().targets 'ipad'
-      desc 'Install the application on iPad device'
-      task 'ipad', ->
-        Tintan.$.tipy ['iphone', 'builder.py'], 'install',
-          Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
-          'ipad', 'retina'
+    if Tintan.$.os is 'osx'
+      if Tintan.appXML().targets 'ipad'
+        desc 'Install the application on iPad device'
+        task 'ipad', ->
+          Tintan.$.tipy ['iphone', 'builder.py'], 'install',
+            Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
+            'ipad', 'retina'
 
-    if Tintan.appXML().targets 'iphone'
-      desc 'Install the application on iPhone device'
-      task 'iphone', ->
-        Tintan.$.tipy ['iphone', 'builder.py'], 'install',
-          Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
-          'iphone', 'retina'
+      if Tintan.appXML().targets 'iphone'
+        desc 'Install the application on iPhone device'
+        task 'iphone', ->
+          Tintan.$.tipy ['iphone', 'builder.py'], 'install',
+            Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
+            'iphone', 'retina'

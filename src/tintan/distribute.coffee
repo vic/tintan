@@ -43,16 +43,17 @@ module.exports = (tintan)->
           '~/.android/debug.keystore', 'android', 'androiddebugkey', Tintan.$._('./'),
           Tintan.$.android_version(), android_avd
 
-    if Tintan.appXML().targets 'ipad'
-      desc 'Build final ipad distribution package for upload to marketplace'
-      task 'ipad', ->
-        Tintan.$.tipy ['iphone', 'builder.py'], 'distribute',
-          Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
-          'ipad', 'retina'
+    if Tintan.$.os is 'osx'
+      if Tintan.appXML().targets 'ipad'
+        desc 'Build final ipad distribution package for upload to marketplace'
+        task 'ipad', ->
+          Tintan.$.tipy ['iphone', 'builder.py'], 'distribute',
+            Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
+            'ipad', 'retina'
 
-    if Tintan.appXML().targets 'iphone'
-      desc 'Build final iphone distribution package for upload to marketplace'
-      task 'iphone', ->
-        Tintan.$.tipy ['iphone', 'builder.py'], 'distribute',
-          Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
-          'iphone', 'retina'
+      if Tintan.appXML().targets 'iphone'
+        desc 'Build final iphone distribution package for upload to marketplace'
+        task 'iphone', ->
+          Tintan.$.tipy ['iphone', 'builder.py'], 'distribute',
+            Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
+            'iphone', 'retina'

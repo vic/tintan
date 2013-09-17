@@ -5,7 +5,7 @@ module.exports = (tintan)->
 
   namespace 'build', ->
 
-    if Tintan.appXML().targets 'iphone'
+    if Tintan.$.os is 'osx' and Tintan.appXML().targets 'iphone'
       build_deps.push 'build:iphone'
       desc 'Build for iPhone'
       task 'iphone', ->
