@@ -4,8 +4,5 @@
 # Include Tintan tasks on this project.
 tintan = require('tintan')
 
-# Compile coffee-script sources from src/coffee
-tintan.compile 'coffee'
-
 # Make the default task depend on build.
 task 'default', ['build']
