@@ -5,7 +5,7 @@ module.exports = (tintan)->
 
     if Tintan.appXML().targets 'android'
       desc 'Install the application on Android device'
-      task 'android', ->
+      task 'android', {async: true}, ->
         # default to config options unless supplied by environment vars
         conf = Tintan.config()
         android_device = conf.envOrGet('android_device')
@@ -15,24 +15,28 @@ module.exports = (tintan)->
 
           Tintan.$.tipy ['android', 'builder.py'], 'install',
             Tintan.appXML().name(), Tintan.$.android_home(), process.cwd(), Tintan.appXML().id(),
-            Tintan.$.android_version(), android_device, debug_string
+            Tintan.$.android_version(), android_device, debug_string,
+            complete
         else
           Tintan.$.tipy ['android', 'builder.py'], 'install',
             Tintan.appXML().name(), Tintan.$.android_home(), process.cwd(), Tintan.appXML().id(),
-            Tintan.$.android_version(), android_device
+            Tintan.$.android_version(), android_device,
+            complete
 
 
     if Tintan.$.os is 'osx'
       if Tintan.appXML().targets 'ipad'
         desc 'Install the application on iPad device'
-        task 'ipad', ->
+        task 'ipad', {async: true}, ->
           Tintan.$.tipy ['iphone', 'builder.py'], 'install',
             Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
-            'ipad', 'retina'
+            'ipad', 'retina',
+            complete
 
       if Tintan.appXML().targets 'iphone'
         desc 'Install the application on iPhone device'
-        task 'iphone', ->
+        task 'iphone', {async: true}, ->
           Tintan.$.tipy ['iphone', 'builder.py'], 'install',
             Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
-            'iphone', 'retina'
+            'iphone', 'retina',
+            complete

@@ -41,9 +41,7 @@ class Coffee
     compiled = (c for s, c of map)
 
     for s, c of map
-      file c, [s], (->
-        compile @prereqs[0], @name, -> complete()
-      ), async: true
+      file c, [s], {async: true}, -> compile @prereqs[0], @name, complete
 
     Tintan.$.onTaskNamespace options.name, (name)->
       desc "Compile coffee-script sources into #{options.target}"

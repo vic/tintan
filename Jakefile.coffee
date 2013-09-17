@@ -20,10 +20,11 @@ new jake.PackageTask pkgJSON.name, pkgJSON.version, ->
 new jake.NpmPublishTask pkgJSON.name, files
 
 desc 'Build coffee from src/ to lib/ with source maps'
-task 'build', ->
+task 'build', {async: true}, ->
   proc = spawn 'coffee', '--compile --map --output lib/ src/'.split ' '
   proc.stdout.on 'data', (data) -> console.log data.toString().trim()
   proc.stderr.on 'data', (data) -> console.log data.toString().trim()
+  proc.on 'exit', complete
 
 task 'default', -> jake.showAllTaskDescriptions true
 

@@ -16,7 +16,7 @@ module.exports = (tintan)->
 
     if Tintan.appXML().targets 'android'
       desc 'Run the application on Android emulator' # with debugging'
-      task 'android', ->
+      task 'android', {async: true}, ->
         # default to config options unless supplied by environment vars
         conf = Tintan.config()
         android_avd = process.env.AVD
@@ -27,23 +27,28 @@ module.exports = (tintan)->
 
           Tintan.$.tipy ['android', 'builder.py'], 'simulator',
             Tintan.appXML().name(), Tintan.$.android_home(), process.cwd(), Tintan.appXML().id(),
-            Tintan.$.android_version(), android_avd, debug_string
+            Tintan.$.android_version(), android_avd, debug_string,
+            complete
         else
           Tintan.$.tipy ['android', 'builder.py'], 'simulator',
             Tintan.appXML().name(), Tintan.$.android_home(), process.cwd(), Tintan.appXML().id(),
-            Tintan.$.android_version(), android_avd
+            Tintan.$.android_version(), android_avd,
+            complete
+
 
     if Tintan.$.os is 'osx'
       if Tintan.appXML().targets 'ipad'
         desc 'Run the application on iPad emulator'
-        task 'ipad', ->
+        task 'ipad', {async: true}, ->
           Tintan.$.tipy ['iphone', 'builder.py'], 'run',
             process.cwd(), Tintan.$.ios_version(), Tintan.appXML().id(), Tintan.appXML().name(),
-            'ipad'
+            'ipad',
+            complete
 
       if Tintan.appXML().targets 'iphone'
         desc 'Run the application on iPhone emulator'
-        task 'iphone', ->
+        task 'iphone', {async: true}, ->
           Tintan.$.tipy ['iphone', 'builder.py'], 'run',
             process.cwd(), Tintan.$.ios_version(), Tintan.appXML().id(), Tintan.appXML().name(),
-            'iphone'
+            'iphone',
+            complete
