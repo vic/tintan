@@ -83,19 +83,20 @@ class Coffee
         console.log('Compiling ' + target + ' with ' + (if iced then 'iced-' else '') + 'coffee-script' )
 
       if conf.envOrGet('source_maps') is true
-        sourceFile = source.split('/')[-1..][0]
+        relativeSource = @options.src + source.split(@options.src)[-1..][0]
         compileOpts =
           sourceMap: true
           filename: source
-          sourceFiles: ['file://' + process.cwd() + '/' + @options.src + source.split(@options.src)[-1..][0]]
+          sourceFiles: ['file://' + process.cwd() + '/' + relativeSource]
           generatedFile: @options.target + target.split(@options.target)[-1..][0]
 
         jsm = coffee.compile c, compileOpts
         j = jsm.js
         sm = jsm.v3SourceMap
 
-        sf = @options.src + source.split(@options.src)[-1..][0]
-        j = "#{j}\n//# sourceMappingURL=data:application/json;base64,#{btoa unescape encodeURIComponent sm}\n//# sourceURL=#{sf}"
+        j =  "#{j}\n"
+        j += "//# sourceMappingURL=data:application/json;base64,#{btoa unescape encodeURIComponent sm}\n"
+        j += "//# sourceURL=#{relativeSource}"
 
       else
         j = coffee.compile c
@@ -107,32 +108,6 @@ class Coffee
       process.stderr.write err.toString() + "\n"
       fail("Error compiling #{source}\n")
     cb()
-
-  getCoffeePath: ->
-    coffeePath = ''
-    result = ''
-    if Tintan.config().envOrGet('iced') is true
-      coffeePath = require.resolve('iced-coffee-script')
-    else
-      coffeePath = require.resolve('coffee-script')
-
-    newCoffeePath = coffeePath.split('/')
-    # ../../../
-    newCoffeePath.pop()
-    newCoffeePath.pop()
-    newCoffeePath.pop()
-    # /bin/coffee
-    newCoffeePath.push('bin')
-    newCoffeePath.push('coffee')
-
-    for dir in newCoffeePath
-      if dir is ''
-        continue
-      else
-        result += '/'
-        result += dir
-
-    return result
 
   invokeTask: -> invoke @options.name
 
