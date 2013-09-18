@@ -16,7 +16,7 @@ module.exports = (tintan)->
 
     if Tintan.appXML().targets 'android'
       desc 'Build final android distribution package for upload to marketplace'
-      task 'android', {async: true}, ->
+      task 'android', ['compile:dist'], {async: true}, ->
         return unless foundJavaHome()
 
         conf = Tintan.config()
@@ -33,7 +33,7 @@ module.exports = (tintan)->
 
     if Tintan.appXML().targets 'android'
       desc 'Build android package with default debug keystore for upload to TestFlight'
-      task 'tf-android', {async: true}, ->
+      task 'tf-android', ['compile'], {async: true}, ->
         return unless foundJavaHome()
 
         android_avd = process.env.AVD
@@ -49,7 +49,7 @@ module.exports = (tintan)->
     if Tintan.$.os is 'osx'
       if Tintan.appXML().targets 'ipad'
         desc 'Build final ipad distribution package for upload to marketplace'
-        task 'ipad', {async: true}, ->
+        task 'ipad', ['compile:dist'], {async: true}, ->
           Tintan.$.tipy ['iphone', 'builder.py'], 'distribute',
             Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
             'ipad', 'retina',
@@ -57,7 +57,7 @@ module.exports = (tintan)->
 
       if Tintan.appXML().targets 'iphone'
         desc 'Build final iphone distribution package for upload to marketplace'
-        task 'iphone', {async: true}, ->
+        task 'iphone', ['compile:dist'], {async: true}, ->
           Tintan.$.tipy ['iphone', 'builder.py'], 'distribute',
             Tintan.$.ios_version(), process.cwd(), Tintan.appXML().id(), Tintan.appXML().name(),
             'iphone', 'retina',
