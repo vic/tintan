@@ -16,7 +16,7 @@ module.exports = (tintan)->
   require(file) tintan for file in files
 
   env = tintan.constructor.env
-  prereq = switch env.command
+  prereq = switch env?.command
     when 'distribute' then 'compile:dist'
     else 'compile'
 
