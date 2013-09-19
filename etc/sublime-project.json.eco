@@ -52,6 +52,12 @@
 				"cmd": ["tintan", "compile:coffee"],
 				"name": "Compile CoffeeScript sources"
 			},{
+				"cmd": ["tintan", "compile:coffee:dist"],
+				"name": "Compile CoffeeScript for Distribution"
+			},{
+				"cmd": ["tintan", "compile:coffee:force"],
+				"name": "Compile CoffeeScript regardless of mod time"
+			},{
 				"cmd": ["tintan", "compile:coffee:clean"],
 				"name": "Clean JS compiled from CoffeeScript"
 			},{
@@ -60,6 +66,9 @@
 			},{
 				"cmd": ["tintan", "distribute:android"],
 				"name": "Distribute for Android"
+			},{
+				"cmd": ["tintan", "distribute:tf-android"],
+				"name": "Distribute for Android on TestFlight"
 			},{
 				"cmd": ["tintan", "distribute:iphone"],
 				"name": "Distribute for iPhone"

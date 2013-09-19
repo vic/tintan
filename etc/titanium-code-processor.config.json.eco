@@ -1,0 +1,55 @@
+<% projectRoot = process.cwd() %>
+{
+    "sourceInformation": {
+        "projectDir": "<%= projectRoot %>",
+        "entryPoint": "<%= projectRoot %>/Resources/app.js",
+        "sourceDir": "<%= projectRoot %>/Resources",
+        "sourceMaps": "<%= projectRoot %>/build/map/Resources",
+        "originalSourceDir": "<%= projectRoot %>/src/coffee"
+    },
+    "logging": {
+        "file": {
+            "level": "debug",
+            "path": "<%= projectRoot %>/titanium-code-processor.log"
+        }
+    },
+    "options": {
+        "resultsPath": "path/to/results/directory",
+        "processUnvisitedCode": true,
+        "maxRecursionLimit": 500
+    }
+<!--     },
+    "plugins": [
+        {
+            "path": "path/to/common-globals",
+            "options": {}
+        },
+        {
+            "path": "path/to/require-provider",
+            "options": {
+                "platform": "iphone",
+                "modules": []
+            }
+        },
+        {
+            "path": "path/to/ti-api-processor",
+            "options": {
+                "platform": "iphone",
+                "sdkPath": "path/to/sdk",
+                "values": {
+                    "Titanium.Platform.displayCaps.platformWidth": 720
+                }
+            }
+        },
+        {
+            "path": "path/to/ti-api-usage-finder",
+            "options": {}
+        },
+        {
+            "path": "path/to/ti-api-platform-validator",
+            "options": {
+                "platform": "iphone"
+            }
+        }
+    ] -->
+}
