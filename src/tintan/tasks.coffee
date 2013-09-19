@@ -7,6 +7,7 @@ files = '
   run
   install
   distribute
+  inspector
 
 '.trim().split(/[^a-zA-Z\/\.]+/).map (s)-> './'+s
 

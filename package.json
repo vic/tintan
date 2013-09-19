@@ -44,7 +44,8 @@
     "btoa": ">=1.1.1"
   },
   "optionalDependencies": {
-    "iced-coffee-script": ">=1.6.3-g"
+    "iced-coffee-script": ">=1.6.3-g",
+    "node-inspector": "doublerebel/node-inspector"
   },
   "devDependencies": {},
   "engines": {

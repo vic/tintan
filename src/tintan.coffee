@@ -135,6 +135,7 @@ class Config
     debug: false
     debug_address: '127.0.0.1'
     debug_port: 5858
+    debug_web_port: 8080
     android_avd: null
     android_device: ''
     android_sdk: null

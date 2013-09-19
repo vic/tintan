@@ -22,8 +22,11 @@
 			"cmd": ["tintan", "run:android"],
 			"variants":
 			[{
-				"cmd": ["tintan", "run:iphone"],
+				"cmd": ["touch", "tiapp.xml"],
 				"name": "Run"
+			},{
+				"cmd": ["tintan", "run:iphone"],
+				"name": "Run on iPhone simulator"
 			},{
 				"cmd": ["tintan", "run:ipad"],
 				"name": "Run on iPad simulator"
@@ -43,8 +46,17 @@
 				"cmd": ["tintan", "build:iphone"],
 				"name": "Build for iPhone"
 			},{
-				"cmd": ["touch", "tiapp.xml"],
-				"name": "Full build (touch tiapp.xml)"
+				"cmd": ["tintan", "inspector"],
+				"name": "Toggle running node-inspector"
+			},{
+				"cmd": ["tintan", "inspector:restart"],
+				"name": "Restart running node-inspector"
+			},{
+				"cmd": ["tintan", "config:set debug=true"],
+				"name": "Enable debugger"
+			},{
+				"cmd": ["tintan", "config:set debug=false"],
+				"name": "Disable debugger"
 			},{
 				"cmd": ["tintan", "compile"],
 				"name": "Compile all sources"
