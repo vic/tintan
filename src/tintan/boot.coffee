@@ -98,7 +98,7 @@ class Boot
           info 'upgrading'.green + ' ' + filename
           value = JSON.parse value
           existing = JSON.parse(fs.readFileSync(filename, 'utf-8'))
-          existing.build_systems = xtnd (existing.build_systems or {}), value.build_systems
+          existing.build_systems = xtnd (existing.build_systems or []), value.build_systems
           value = JSON.stringify(existing, undefined, 2)
         fs.writeFileSync filename, value, 'utf-8'
         Tintan.config().set sublime_project: filename
