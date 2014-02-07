@@ -89,6 +89,7 @@ class Coffee
           filename: source
           sourceFiles: ['file://' + process.cwd() + '/' + relativeSource]
           generatedFile: @options.target + target.split(@options.target)[-1..][0]
+          runtime: "none"
 
         jsm = coffee.compile c, compileOpts
         j = jsm.js
@@ -99,7 +100,7 @@ class Coffee
         j += "//# sourceURL=#{relativeSource}"
 
       else
-        j = coffee.compile c
+        j = coffee.compile c, runtime: "none"
 
       fs.writeFileSync target, j, 'utf-8'
 
