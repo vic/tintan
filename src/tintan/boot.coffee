@@ -36,7 +36,7 @@ sublimeProject = (Tintan) ->
   cwd = process.cwd()
   file = Tintan.config().envOrGet 'sublime_project'
   file or= (f for f in fs.readdirSync(cwd) when /\.sublime-project$/.test f).sort()[0]
-  file or= (cwd = cwd.split('/'))[cwd.length - 1]
+  file or= (cwd = cwd.split('/'))[cwd.length - 1] + ".sublime-project"
 
 class Boot
 
