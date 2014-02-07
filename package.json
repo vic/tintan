@@ -41,7 +41,8 @@
     "ini": ">=1.1.0",
     "source-map-support": ">=0.2.3",
     "touch": ">=0.0.2",
-    "btoa": ">=1.1.1"
+    "btoa": ">=1.1.1",
+    "rimraf": ">=2.2.6"
   },
   "optionalDependencies": {
     "iced-coffee-script": ">=1.6.3-g",

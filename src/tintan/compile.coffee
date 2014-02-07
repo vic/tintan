@@ -3,8 +3,10 @@ fs     = require 'fs'
 path   = require 'path'
 btoa   = require 'btoa'
 coffee = require 'coffee-script'
+exec   = require('child_process').exec
 spawn  = require('child_process').spawn
 touch  = require 'touch'
+rimraf = require 'rimraf'
 
 Tintan = null
 
@@ -115,8 +117,69 @@ class Coffee
   invokeClean: -> invoke @options.name + ':clean'
 
 
+class NodeModules
+  DEFAULT_OPTIONS =
+    src: 'node_modules'               # directory to take .coffee or .iced files from
+    target: 'Resources/node_modules'  # directory to put .js files into
+    name: 'compile:node_modules'      # name of the compiler task to generate
+
+  init: (tintan, @options = {})->
+    @options[k] = v for k,v of DEFAULT_OPTIONS when !@options.hasOwnProperty(k)
+    options = @options
+
+    from           = Tintan.$._(options.src)
+    target         = Tintan.$._(options.target)
+    package_json   = JSON.parse fs.readFileSync Tintan.$._('package.json'), 'utf-8'
+    {dependencies} = package_json
+
+    compile = @compile
+    sources = (s for s of dependencies)
+    return false if sources.length == 0
+    compiled = ((path.join target, s) for s in sources)
+
+    directory target
+    for s in sources
+      task s, [target], {async: true}, -> compile (path.join from, @name), @prereqs[0], complete
+
+    for c in compiled
+      task c, {async: true}, -> rimraf @name, complete
+
+    Tintan.$.onTaskNamespace options.name, (name)->
+      desc "Compile dependencies packages into #{options.target}"
+      task name, sources, ->
+        console.log 'compiled'.green + ' packages into ' + options.target
+
+    Tintan.$.onTaskNamespace options.name + ':clean', ->
+      desc "Clean node_modules from #{options.target}"
+      task 'clean', compiled, ->
+        console.log 'cleaned'.green + ' packages from ' + options.target
+
+
+  compile: (source, target, cb)=>
+    cmd = 'cp -R ' + source + ' ' + target
+
+    try
+      conf = Tintan.config()
+      if conf.envOrGet('verbose') is true
+        console.log('Compiling ' + source + ' to ' + target )
+
+      exec cmd, (err, stdout, stderr) ->
+        throw err if err
+
+    catch err
+      process.stderr.write "Error compiling #{source}\n"
+      process.stderr.write err.toString() + "\n"
+      fail("Error compiling #{source}\n")
+    cb()
+
+  invokeTask: -> invoke @options.name
+
+  invokeClean: -> invoke @options.name + ':clean'
+
+
 Compilers =
   coffee: Coffee
+  node_modules: NodeModules
 
 module.exports = (tintan)->
 

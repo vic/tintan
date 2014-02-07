@@ -6,6 +6,8 @@ tintan = require('tintan')
 
 # Enable coffee compiler on this project
 tintan.compile 'coffee'
+# Enable dependencies packages compiler on this project
+tintan.compile 'node_modules'
 
 # Make the default task show all tasks (like cake/Cakefiles)
 task 'default', -> jake.showAllTaskDescriptions true
